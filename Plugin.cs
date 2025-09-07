@@ -4,21 +4,17 @@ using HarmonyLib;
 
 namespace MoreCommands;
 
-[BepInPlugin(GUID, Name, Version)]
+[BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class MoreCommandsPlugin : BaseUnityPlugin
 {
-    private const string GUID = "shishyando.WK.MoreCommands";
-    private const string Name = "MoreCommands";
-    private const string Version = "0.2.0";
-
     public static new ManualLogSource Logger;
-    private readonly Harmony Harmony = new Harmony(GUID);
+    private readonly Harmony Harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
 
     private void Awake()
     {
         Logger = base.Logger;
         Commands.CommandRegistry.InitializeCommands();
         Harmony.PatchAll(typeof(Patches.ENT_Player_Patcher));
-        Logger.LogInfo($"{GUID} is loaded");
+        Logger.LogInfo($"{MyPluginInfo.PLUGIN_GUID} is loaded");
     }
 }

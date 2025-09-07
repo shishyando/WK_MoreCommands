@@ -2,9 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <AssemblyName>MoreCommands</AssemblyName>
-    <Product>MoreCommandsPlugin</Product>
-    <Version>0.1.0</Version>
+    <BepInExPluginGuid>shishyando.WK.MoreCommands</BepInExPluginGuid>
+    <BepInExPluginName>MoreCommands</BepInExPluginName>
+    <Version>0.2.0</Version>
+    <Description>More console commands for White Knuckle</Description>
+    <PluginUrl>https://github.com/shishyando/WK_MoreCommands</PluginUrl>
+    <DependenciesJson>["BepInEx-BepInExPack-5.4.2100"]</DependenciesJson>
+    <ManifestOutput>$(ProjectDir)manifest.json</ManifestOutput>
+
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -13,7 +18,6 @@
       https://nuget.bepinex.dev/v3/index.json;
       https://nuget.samboy.dev/v3/index.json
     </RestoreAdditionalProjectSources>
-    <RootNamespace>MoreCommands</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -48,5 +52,18 @@
       <Private>false</Private>
     </Reference>
   </ItemGroup>
+
+  <Target Name="GenerateManifest" AfterTargets="Build">
+    <ItemGroup>
+      <_Manifest Include="{" />
+      <_Manifest Include='  "name": "$(BepInExPluginName)",' />
+      <_Manifest Include='  "version_number": "$(BepInExPluginVersion)",' />
+      <_Manifest Include='  "website_url": "$(PluginUrl)",' />
+      <_Manifest Include='  "description": "$(Description)",' />
+      <_Manifest Include='  "dependencies": $(DependenciesJson)' />
+      <_Manifest Include="}" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(ManifestOutput)" Lines="@(_Manifest)" Overwrite="true" />
+  </Target>
 
 </Project>
