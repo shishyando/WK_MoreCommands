@@ -3,7 +3,7 @@ using System;
 
 namespace MoreCommands.Commands;
 
-// freerun = noclip + godmode + deathgoo-stop + fullbright + infinitestamina
+// freerun = godmode + deathgoo-stop + fullbright + infinitestamina
 public sealed class FreerunCommand : Command<FreerunCommand>
 {
     public override string Cmd => "freerun";
