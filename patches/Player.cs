@@ -6,7 +6,7 @@ namespace MoreCommands.Patches;
 [HarmonyPatch(typeof(ENT_Player), "CreateCommands")]
 public static class ENT_Player_Patcher
 {
-    public static bool active = false;
+    public static bool exploreActive = false;
     [HarmonyPostfix]
     public static void AddMorePlayerCommands(ENT_Player __instance)
     {
@@ -16,9 +16,9 @@ public static class ENT_Player_Patcher
         {
             if (args.Length == 0)
             {
-                active = !active;
+                exploreActive = !exploreActive;
             }
-            else if (!bool.TryParse(args[0], out active))
+            else if (!bool.TryParse(args[0], out exploreActive))
             {
                 MoreCommandsPlugin.Logger.LogInfo($"Unable to parse `{args}`, arg needs to be a boolean (true/false/0/1).");
                 return;
@@ -29,18 +29,19 @@ public static class ENT_Player_Patcher
 
     public static void UpdateExploreCommand(ENT_Player __instance)
     {
-        string[] activeArgs = { active.ToString().ToLowerInvariant() };
-        if (active)
+        string[] posArgs = { exploreActive.ToString().ToLowerInvariant() };
+        string[] negArgs = { (!exploreActive).ToString().ToLowerInvariant() };
+        if (exploreActive)
         {
             Accessors.CommandConsoleAccessor.EnableCheats();
         }
-        __instance.SetGodMode(active);
-        __instance.Noclip(activeArgs);
-        __instance.InfiniteStaminaCommand(activeArgs);
-        FXManager.Fullbright(activeArgs);
+        __instance.SetGodMode(exploreActive);
+        __instance.Noclip(posArgs);
+        __instance.InfiniteStaminaCommand(posArgs);
+        FXManager.Fullbright(posArgs);
         DEN_DeathFloor deathgoo = DEN_DeathFloor.instance;
         if (deathgoo != null) {
-            deathgoo.DeathGooToggle(activeArgs);
+            deathgoo.DeathGooToggle(negArgs);
         }
     }
 
