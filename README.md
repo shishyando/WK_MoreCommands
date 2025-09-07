@@ -1,5 +1,6 @@
 ### Console commands added:
 
 ```
-explore = godmode + noclip + fullbright + deathgoo-stop + infiniteStamina
+explore = godmode + fullbright + deathgoo-stop + infiniteStamina + noclip
+freerun = godmode + fullbright + deathgoo-stop + infiniteStamina
 ```
