@@ -6,15 +6,20 @@ namespace MoreCommands.Accessors;
 public static class CommandConsoleAccessor {
     private static readonly Action<CommandConsole, string[]> EnableCheatsRaw =
     AccessTools.MethodDelegate<Action<CommandConsole, string[]>>(
-        AccessTools.Method(typeof(CommandConsole), "EnableCheatsCommand", new[] { typeof(string[]) })
+        AccessTools.Method(typeof(CommandConsole), "EnableCheatsCommand", [typeof(string[])])
     );
 
     private static readonly Action<CommandConsole> CheatsEnabler =
-        inst => EnableCheatsRaw(inst, Array.Empty<string>());
+        inst => EnableCheatsRaw(inst, ["true"]);
 
-    public static void EnableCheats() {
+    public static void EnsureCheatsAreEnabld() {
+        if (CommandConsole.hasCheated)
+        {
+            return;
+        }
         CommandConsole inst = CommandConsole.instance;
-        if (inst == null) {
+        if (inst == null)
+        {
             MoreCommandsPlugin.Logger.LogWarning("CommandConsoleAccessor::EnableCheats instance is null");
             return;
         }
