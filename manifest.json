@@ -1,0 +1,9 @@
+{
+    "name": "MoreCommands",
+    "version_number": "0.1.0",
+    "website_url": "https://github.com/shishyando/WK_MoreCommands",
+    "description": "`explore` console command = `cheats + noclip + godmode + deathgoo-stop + fullbright`",
+    "dependencies": [
+        "BepInEx-BepInExPack-5.4.2100"
+    ]
+}
