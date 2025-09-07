@@ -9,6 +9,7 @@
     <PluginUrl>https://github.com/shishyando/WK_MoreCommands</PluginUrl>
     <DependenciesJson>["BepInEx-BepInExPack-5.4.2100"]</DependenciesJson>
     <ManifestOutput>$(ProjectDir)manifest.json</ManifestOutput>
+    <ZipOutputPath>$(ProjectDir)thunderstore.zip</ZipOutputPath>
 
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
@@ -64,6 +65,10 @@
       <_Manifest Include="}" />
     </ItemGroup>
     <WriteLinesToFile File="$(ManifestOutput)" Lines="@(_Manifest)" Overwrite="true" />
+  </Target>
+
+  <Target Name="ThunderstorePackage" AfterTargets="Build">
+    <Exec Command='python "$(ProjectDir)thunderstore.py" --out "$(ZipOutputPath)" --readme "$(ProjectDir)README.md" --manifest "$(ProjectDir)manifest.json" --icon "$(ProjectDir)img\icon.png" --dll "$(TargetPath)"' />
   </Target>
 
 </Project>
