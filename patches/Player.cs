@@ -1,6 +1,6 @@
 using System;
 using HarmonyLib;
-using MoreCommands.Commands;
+using MoreCommands.Common;
 
 namespace MoreCommands.Patches;
 
@@ -13,7 +13,10 @@ public static class ENT_Player_Patcher
     {
         foreach (var c in CommandRegistry.GetCommandsByTag(CommandTag.Player))
         {
-            CommandConsole.AddCommand(c.Cmd, c.GetCallback(), false);
+            foreach (var alias in c.Aliases)
+            {
+                CommandConsole.AddCommand(alias, c.GetCallback(), false);
+            }
         }
     }
 }

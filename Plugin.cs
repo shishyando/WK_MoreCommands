@@ -1,6 +1,8 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
+using MoreCommands.Common;
+using UnityEngine.SceneManagement;
 
 namespace MoreCommands;
 
@@ -13,8 +15,17 @@ public class MoreCommandsPlugin : BaseUnityPlugin
     private void Awake()
     {
         Logger = base.Logger;
-        Commands.CommandRegistry.InitializeCommands();
+        CommandRegistry.InitializeCommands();
         Harmony.PatchAll(typeof(Patches.ENT_Player_Patcher));
         Logger.LogInfo($"{MyPluginInfo.PLUGIN_GUID} is loaded");
+
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
+    }
+
+    public static void OnSceneUnloaded(Scene s) {
+        if (s.name == "Game-Main")
+        {
+            CommandRegistry.DisableAllCommands();
+        }
     }
 }

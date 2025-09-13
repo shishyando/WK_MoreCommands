@@ -1,20 +1,21 @@
 using System;
+using MoreCommands.Commands;
 
-namespace MoreCommands.Commands;
+namespace MoreCommands.Common;
 
 public interface ICommand
 {
     Action<string[]> GetCallback();
-    void UpdateEnabled(string[] args);
-    string[] WhenEnabled();
-    string[] WhenDisabled();
-    string Cmd { get; }
+    string[] Aliases { get; }
     CommandTag Tag { get; }
+}
+
+public interface ITogglableCommand : ICommand
+{
     bool Enabled { get; set; }
 }
 
-
-public abstract class Command<T> : ICommand where T : Command<T>
+public abstract class TogglableCommand<T> : ITogglableCommand where T : TogglableCommand<T>
 {
     public abstract Action<string[]> GetCallback();
 
@@ -44,7 +45,15 @@ public abstract class Command<T> : ICommand where T : Command<T>
         return [(!Enabled).ToString().ToLower()];
     }
 
-    public abstract string Cmd { get; }
+    public abstract string[] Aliases { get; }
     public abstract CommandTag Tag { get; }
     public bool Enabled { get; set; }
+}
+
+public abstract class OneshotCommand<T> : ICommand where T : OneshotCommand<T>
+{
+    public abstract Action<string[]> GetCallback();
+
+    public abstract string[] Aliases { get; }
+    public abstract CommandTag Tag { get; }
 }

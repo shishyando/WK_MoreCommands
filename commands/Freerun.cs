@@ -1,12 +1,13 @@
 
 using System;
+using MoreCommands.Common;
 
 namespace MoreCommands.Commands;
 
 // freerun = godmode + deathgoo-stop + fullbright + infinitestamina
-public sealed class FreerunCommand : Command<FreerunCommand>
+public sealed class FreerunCommand : TogglableCommand<FreerunCommand>
 {
-    public override string Cmd => "freerun";
+    public override string[] Aliases => ["freerun"];
     public override CommandTag Tag => CommandTag.Player;
 
     public override Action<string[]> GetCallback()

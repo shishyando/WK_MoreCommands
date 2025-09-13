@@ -1,12 +1,13 @@
 
 using System;
+using MoreCommands.Common;
 
 namespace MoreCommands.Commands;
 
 // explore = noclip + godmode + deathgoo-stop + fullbright + infinitestamina
-public sealed class ExploreCommand : Command<ExploreCommand>
+public sealed class ExploreCommand : TogglableCommand<ExploreCommand>
 {
-    public override string Cmd => "explore";
+    public override string[] Aliases => ["explore"];
     public override CommandTag Tag => CommandTag.Player;
 
     public override Action<string[]> GetCallback()
@@ -20,11 +21,11 @@ public sealed class ExploreCommand : Command<ExploreCommand>
             }
             ENT_Player player = ENT_Player.playerObject;
             player?.SetGodMode(Enabled);
-            player?.Noclip(WhenEnabled());
             player?.InfiniteStaminaCommand(WhenEnabled());
             FXManager.Fullbright(WhenEnabled());
             DEN_DeathFloor deathgoo = DEN_DeathFloor.instance;
             deathgoo?.DeathGooToggle(WhenDisabled());
+            player?.Noclip(WhenEnabled());
         };
     }
 }

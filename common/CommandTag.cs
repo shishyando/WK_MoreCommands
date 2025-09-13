@@ -1,4 +1,4 @@
-namespace MoreCommands.Commands;
+namespace MoreCommands.Common;
 
 public enum CommandTag
 {
