@@ -27,6 +27,7 @@
     <ThunderstoreScript>$([System.IO.Path]::Combine('$(ProjectDir)','thunderstore.py'))</ThunderstoreScript>
     <ReadmePath>$([System.IO.Path]::Combine('$(ProjectDir)','README.md'))</ReadmePath>
     <IconPath>$([System.IO.Path]::Combine('$(ProjectDir)','img','icon.png'))</IconPath>
+    <UpdateReadmeScript>$([System.IO.Path]::Combine('$(ProjectDir)','scripts','gen_readme.py'))</UpdateReadmeScript>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,8 +35,7 @@
     <PackageReference Include="BepInEx.Core" Version="5.*" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
     <PackageReference Include="UnityEngine.Modules" Version="2022.3.32" IncludeAssets="compile" />
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3"
-      PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
     <PackageReference Include="NETStandard.Library" Version="2.0.3" />
     <PackageReference Include="Microsoft.NETCore.Platforms" Version="7.0.4" />
   </ItemGroup>
@@ -74,9 +74,12 @@
     <WriteLinesToFile File="$(ManifestOutput)" Lines="@(_Manifest)" Overwrite="true" />
   </Target>
 
-  <Target Name="ThunderstorePackage" AfterTargets="Build">
-    <Exec
-      Command='$(PythonCmd) "$(ThunderstoreScript)" --out "$(ZipOutputPath)" --readme "$(ReadmePath)" --manifest "$(ManifestOutput)" --icon "$(IconPath)" --dll "$(TargetPath)"' />
+  <Target Name="UpdateReadme" AfterTargets="Build">
+    <Exec Command='$(PythonCmd) "$(UpdateReadmeScript)" --commands-dir "$(ProjectDir)commands" --readme "$(ReadmePath)"' />
+  </Target>
+
+  <Target Name="ThunderstorePackage" AfterTargets="Build" DependsOnTargets="UpdateReadme">
+    <Exec Command='$(PythonCmd) "$(ThunderstoreScript)" --out "$(ZipOutputPath)" --readme "$(ReadmePath)" --manifest "$(ManifestOutput)" --icon "$(IconPath)" --dll "$(TargetPath)"' />
   </Target>
 
 </Project>

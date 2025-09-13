@@ -4,11 +4,12 @@ using MoreCommands.Common;
 
 namespace MoreCommands.Commands;
 
-// freerun = godmode + deathgoo-stop + fullbright + infinitestamina
+
 public static class FreerunCommand
 {
     public static string[] Aliases => ["freerun"];
     public static CommandTag Tag => CommandTag.Player;
+    public static string Description => "godmode + deathgoo-stop + fullbright + infinitestamina";
     public static bool Enabled;
 
     public static void ApplyFreerunState(bool enabled)

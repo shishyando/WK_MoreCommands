@@ -4,11 +4,12 @@ using MoreCommands.Common;
 
 namespace MoreCommands.Commands;
 
-// explore = freerun + noclip
+
 public static class ExploreCommand
 {
     public static string[] Aliases => ["explore"];
     public static CommandTag Tag => CommandTag.Player;
+    public static string Description => "freerun + noclip";
     public static bool Enabled;
 
     public static Action<string[]> GetCallback()

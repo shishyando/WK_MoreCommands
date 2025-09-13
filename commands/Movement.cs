@@ -5,11 +5,12 @@ using MoreCommands.Common;
 
 namespace MoreCommands.Commands;
 
-// speedy = get some movement perks `arg` times (1 by default)
+
 public static class MovementCommand
 {
     public static string[] Aliases => ["speedy"];
     public static CommandTag Tag => CommandTag.Player;
+    public static string Description => "get some movement perks `arg` times (1 by default)";
 
     public static Action<string[]> GetCallback()
     {

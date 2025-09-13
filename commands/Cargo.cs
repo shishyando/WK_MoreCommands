@@ -4,11 +4,12 @@ using MoreCommands.Common;
 
 namespace MoreCommands.Commands;
 
-// cargo = backstrength times `arg`, 9 by default
+
 public static class CargoCommand
 {
     public static string[] Aliases => ["cargo"];
     public static CommandTag Tag => CommandTag.Player;
+    public static string Description => "backstrength times `arg`, (9 by default)";
 
     public static Action<string[]> GetCallback()
     {

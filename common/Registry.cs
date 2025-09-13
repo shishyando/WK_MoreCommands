@@ -14,6 +14,7 @@ public static partial class CommandRegistry
         public CommandTag Tag { get; set; }
         public Action<string[]> Callback { get; set; }
         public Type DeclaringType { get; set; }
+        public string Description { get; set; }
 
         public Action<string[]> GetCallback() => Callback;
     }

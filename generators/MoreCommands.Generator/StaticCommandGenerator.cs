@@ -52,6 +52,7 @@ public sealed class StaticCommandGenerator : ISourceGenerator
             bool hasAliases = HasStaticPropertyOfType(symbol, "Aliases", stringArrayType);
             bool hasTag = HasStaticPropertyOfType(symbol, "Tag", commandTagType);
             bool hasCallback = HasStaticGetCallback(symbol, actionTypeDef, stringArrayType);
+            bool hasDescription = HasStaticMemberOfType(symbol, "Description", stringType);
 
             if (!hasAliases)
             {
@@ -65,8 +66,12 @@ public sealed class StaticCommandGenerator : ISourceGenerator
             {
                 Report(context, symbol, "MC0003", $"{symbol.Name} must declare public static System.Action<string[]> GetCallback().");
             }
+            if (!hasDescription)
+            {
+                Report(context, symbol, "MC0008", $"{symbol.Name} must declare public static string Description {{ get; }} or public static string Description.");
+            }
 
-            if (hasAliases && hasTag && hasCallback)
+            if (hasAliases && hasTag && hasCallback && hasDescription)
             {
                 validCommandClasses.Add(symbol);
                 var aliases = TryExtractAliasesLiterals(symbol);
@@ -138,6 +143,7 @@ public sealed class StaticCommandGenerator : ISourceGenerator
             sb.AppendLine($"            Tag = {fqn}.Tag,");
             sb.AppendLine($"            Callback = {fqn}.GetCallback(),");
             sb.AppendLine($"            DeclaringType = typeof({fqn}),");
+            sb.AppendLine($"            Description = {fqn}.Description,");
             sb.AppendLine($"        }});");
         }
         sb.AppendLine("    }");
@@ -150,6 +156,15 @@ public sealed class StaticCommandGenerator : ISourceGenerator
         if (expected is null) return false;
         var prop = type.GetMembers(name).OfType<IPropertySymbol>().FirstOrDefault(p => p.IsStatic && p.DeclaredAccessibility == Accessibility.Public);
         return prop is not null && SymbolEqualityComparer.Default.Equals(prop.Type, expected);
+    }
+
+    private static bool HasStaticMemberOfType(INamedTypeSymbol type, string name, ITypeSymbol expected)
+    {
+        if (expected is null) return false;
+        var prop = type.GetMembers(name).OfType<IPropertySymbol>().FirstOrDefault(p => p.IsStatic && p.DeclaredAccessibility == Accessibility.Public);
+        if (prop is not null && SymbolEqualityComparer.Default.Equals(prop.Type, expected)) return true;
+        var field = type.GetMembers(name).OfType<IFieldSymbol>().FirstOrDefault(f => f.IsStatic && f.DeclaredAccessibility == Accessibility.Public);
+        return field is not null && SymbolEqualityComparer.Default.Equals(field.Type, expected);
     }
 
     private static bool HasStaticGetCallback(INamedTypeSymbol type, INamedTypeSymbol actionDef, ITypeSymbol stringArray)

@@ -4,11 +4,12 @@ using MoreCommands.Common;
 
 namespace MoreCommands.Commands;
 
-// flash = freerun + speedy + cargo
+
 public static class FlashCommand
 {
     public static string[] Aliases => ["flash"];
     public static CommandTag Tag => CommandTag.Player;
+    public static string Description => "freerun + speedy + cargo";
     public static bool Enabled = true;
 
     public static Action<string[]> GetCallback()
