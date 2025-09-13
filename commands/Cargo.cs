@@ -1,21 +1,20 @@
-
 using System;
 using MoreCommands.Common;
 
 namespace MoreCommands.Commands;
 
 
-public static class CargoCommand
+public sealed class CargoCommand : CommandBase
 {
-    public static string[] Aliases => ["cargo"];
-    public static CommandTag Tag => CommandTag.Player;
-    public static string Description => "backstrength times `arg`, (9 by default)";
+    public override string[] Aliases => ["cargo"];
+    public override CommandTag Tag => CommandTag.Player;
+    public override string Description => "backstrength times `arg`, (9 by default)";
 
-    public static Action<string[]> GetCallback()
+    protected override Action<string[]> GetLogicCallback()
     {
         return args =>
         {
-            Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabld();
+            Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabled();
             ENT_Player player = ENT_Player.playerObject;
             if (player == null) return;
 

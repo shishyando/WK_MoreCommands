@@ -1,29 +1,22 @@
-
 using System;
 using MoreCommands.Common;
 
 namespace MoreCommands.Commands;
 
 
-public static class ExploreCommand
+public sealed class ExploreCommand : TogglableCommandBase
 {
-    public static string[] Aliases => ["explore"];
-    public static CommandTag Tag => CommandTag.Player;
-    public static string Description => "freerun + noclip";
-    public static bool Enabled;
+    public override string[] Aliases => ["explore"];
+    public override CommandTag Tag => CommandTag.Player;
+    public override string Description => "freerun + noclip";
 
-    public static Action<string[]> GetCallback()
+    protected override Action<string[]> GetLogicCallback()
     {
-        return args =>
-        {
-            CommandHelpers.UpdateEnabled(ref Enabled, args);
-            if (Enabled)
+        return CommandRegistry.GetCallback<FreerunCommand>()
+            + new Action<string[]>(args =>
             {
-                Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabld();
-            }
-            FreerunCommand.ApplyFreerunState(Enabled);
-            ENT_Player player = ENT_Player.playerObject;
-            player?.Noclip(CommandHelpers.WhenEnabled(Enabled));
-        };
+                ENT_Player player = ENT_Player.playerObject;
+                player?.Noclip(WhenEnabled(Enabled));
+            });
     }
 }

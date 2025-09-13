@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using MoreCommands.Common;
@@ -6,17 +5,17 @@ using MoreCommands.Common;
 namespace MoreCommands.Commands;
 
 
-public static class MovementCommand
+public sealed class MovementCommand : CommandBase
 {
-    public static string[] Aliases => ["speedy"];
-    public static CommandTag Tag => CommandTag.Player;
-    public static string Description => "get some movement perks `arg` times (1 by default)";
+    public override string[] Aliases => ["speedy"];
+    public override CommandTag Tag => CommandTag.Player;
+    public override string Description => "get some movement perks `arg` times (1 by default)";
 
-    public static Action<string[]> GetCallback()
+    protected override Action<string[]> GetLogicCallback()
     {
         return args =>
         {
-            Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabld();
+            Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabled();
             ENT_Player player = ENT_Player.playerObject;
             if (player == null) return;
             for (int i = 0; i < ArgParse.GetMult(args, 1); ++i)

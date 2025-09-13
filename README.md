@@ -11,10 +11,3 @@ flash = freerun + speedy + cargo
 freerun = godmode + deathgoo-stop + fullbright + infinitestamina
 speedy = get some movement perks `arg` times (1 by default)
 ```
-
-
-
-
-
-
-

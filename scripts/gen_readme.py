@@ -22,20 +22,15 @@ def extract_command_docs(commands_dir):
             except Exception:
                 continue
 
-            # Find Aliases expression body content up to semicolon
+            # Find Aliases expression/initializer body content up to semicolon
             aliases = []
-            m_alias = re.search(r'public\s+static\s+string\s*\[\s*\]\s*Aliases\s*=>\s*([\s\S]*?);', content)
-            if not m_alias:
-                # try initializer style
-                m_alias = re.search(r'public\s+static\s+string\s*\[\s*\]\s*Aliases\s*=\s*([\s\S]*?);', content)
+            m_alias = re.search(r'public\s+(?:override|static)\s+string\s*\[\s*\]\s*Aliases\s*(?:=>|=)\s*([\s\S]*?);', content)
             if m_alias:
                 aliases = parse_string_literals(m_alias.group(1))
 
             # Find Description property or field
             description = None
-            m_desc = re.search(r'public\s+static\s+string\s+Description\s*=>\s*([^;]+);', content)
-            if not m_desc:
-                m_desc = re.search(r'public\s+static\s+string\s+Description\s*=\s*([^;]+);', content)
+            m_desc = re.search(r'public\s+(?:override|static)\s+string\s+Description\s*(?:=>|=)\s*([^;]+);', content)
             if m_desc:
                 # take the first string literal
                 lits = parse_string_literals(m_desc.group(1))
@@ -61,29 +56,32 @@ def extract_command_docs(commands_dir):
 
 
 def replace_code_block(readme_path, lines):
-    with open(readme_path, 'r', encoding='utf-8') as f:
-        content = f.read()
+    # Build the entire README from a predefined header and the generated commands block.
+    header_lines = [
+        "# MoreCommands",
+        "",
+        "Adds console commands for White Knuckle.",
+        "",
+        "### Console commands added:",
+        "",
+        "```",
+    ]
+    footer_lines = [
+        "```",
+        "",  # ensure a single trailing newline at EOF
+    ]
 
-    # Replace content between the first fenced code block after the heading "### Console commands added:".
-    # It should look like:
-    # ### Console commands added:
-    # ```
-    # ...
-    # ```
-    heading_pattern = re.compile(r"(###\s+Console\s+commands\s+added:\s*\n)```[\s\S]*?```", re.MULTILINE)
+    new_content = "\n".join(header_lines + list(lines) + footer_lines)
 
-    new_block = "\\g<1>```\n{body}\n```\n".format(body="\n".join(lines))
+    try:
+        with open(readme_path, 'r', encoding='utf-8') as f:
+            current = f.read()
+    except FileNotFoundError:
+        current = None
 
-    if heading_pattern.search(content):
-        updated = heading_pattern.sub(new_block, content, count=1)
-    else:
-        # Append a new section at the end if not found
-        sep = "\n" if content.endswith("\n") else "\n\n"
-        updated = content + f"{sep}### Console commands added:\n```\n{os.linesep.join(lines)}\n```\n"
-
-    if updated != content:
+    if current != new_content:
         with open(readme_path, 'w', encoding='utf-8') as f:
-            f.write(updated)
+            f.write(new_content)
 
 
 def main():

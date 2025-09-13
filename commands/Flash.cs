@@ -1,27 +1,19 @@
-
 using System;
 using MoreCommands.Common;
 
 namespace MoreCommands.Commands;
 
 
-public static class FlashCommand
+public sealed class FlashCommand : CommandBase
 {
-    public static string[] Aliases => ["flash"];
-    public static CommandTag Tag => CommandTag.Player;
-    public static string Description => "freerun + speedy + cargo";
-    public static bool Enabled = true;
+    public override string[] Aliases => ["flash"];
+    public override CommandTag Tag => CommandTag.Player;
+    public override string Description => "freerun + speedy + cargo";
 
-    public static Action<string[]> GetCallback()
+    protected override Action<string[]> GetLogicCallback()
     {
-        return args =>
-        {
-            Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabld();
-            // Reuse freerun basics
-            FreerunCommand.ApplyFreerunState(true);
-            // Add speedy perks and cargo capacity
-            MovementCommand.GetCallback().Invoke([]);
-            CargoCommand.GetCallback().Invoke([]);
-        };
+        return CommandRegistry.GetCallback<FreerunCommand>()
+            + CommandRegistry.GetCallback<MovementCommand>()
+            + CommandRegistry.GetCallback<CargoCommand>();
     }
 }

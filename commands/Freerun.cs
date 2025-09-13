@@ -1,37 +1,25 @@
-
 using System;
 using MoreCommands.Common;
 
 namespace MoreCommands.Commands;
 
 
-public static class FreerunCommand
+public sealed class FreerunCommand : TogglableCommandBase
 {
-    public static string[] Aliases => ["freerun"];
-    public static CommandTag Tag => CommandTag.Player;
-    public static string Description => "godmode + deathgoo-stop + fullbright + infinitestamina";
-    public static bool Enabled;
+    public override string[] Aliases => ["freerun"];
+    public override CommandTag Tag => CommandTag.Player;
+    public override string Description => "godmode + deathgoo-stop + fullbright + infinitestamina";
 
-    public static void ApplyFreerunState(bool enabled)
-    {
-        ENT_Player player = ENT_Player.playerObject;
-        player?.SetGodMode(enabled);
-        player?.InfiniteStaminaCommand(CommandHelpers.WhenEnabled(enabled));
-        FXManager.Fullbright(CommandHelpers.WhenEnabled(enabled));
-        DEN_DeathFloor deathgoo = DEN_DeathFloor.instance;
-        deathgoo?.DeathGooToggle(CommandHelpers.WhenDisabled(enabled));
-    }
-
-    public static Action<string[]> GetCallback()
+    protected override Action<string[]> GetLogicCallback()
     {
         return args =>
         {
-            CommandHelpers.UpdateEnabled(ref Enabled, args);
-            if (Enabled)
-            {
-                Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabld();
-            }
-            ApplyFreerunState(Enabled);
+            ENT_Player player = ENT_Player.playerObject;
+            player?.SetGodMode(Enabled);
+            player?.InfiniteStaminaCommand(WhenEnabled(Enabled));
+            FXManager.Fullbright(WhenEnabled(Enabled));
+            DEN_DeathFloor deathgoo = DEN_DeathFloor.instance;
+            deathgoo?.DeathGooToggle(WhenDisabled(Enabled));
         };
     }
 }

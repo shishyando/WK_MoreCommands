@@ -12,7 +12,7 @@ public static class CommandConsoleAccessor {
     private static readonly Action<CommandConsole> CheatsEnabler =
         inst => EnableCheatsRaw(inst, ["true"]);
 
-    public static void EnsureCheatsAreEnabld() {
+    public static void EnsureCheatsAreEnabled() {
         if (CommandConsole.hasCheated)
         {
             return;

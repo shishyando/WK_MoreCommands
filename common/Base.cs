@@ -2,23 +2,51 @@ using System;
 
 namespace MoreCommands.Common;
 
-public static class CommandHelpers
-{
-    public static void UpdateEnabled(ref bool enabled, string[] args)
+
+public interface ICommand {
+    string[] Aliases { get; }
+    CommandTag Tag { get; }
+    string Description { get; }
+    Action<string[]> GetCallback();
+}
+
+public interface ITogglableCommand : ICommand {
+    bool Enabled { get; set; }
+    void UpdateEnabled(string[] args);
+}
+
+public abstract class CommandBase : ICommand {
+    public abstract string[] Aliases { get; }
+    public abstract CommandTag Tag { get; }
+    public abstract string Description { get; }
+    protected abstract Action<string[]> GetLogicCallback();
+
+    public virtual Action<string[]> GetCallback()
     {
-        if (args.Length == 0)
+        return GetLogicCallback();
+    }
+}
+
+public abstract class TogglableCommandBase : CommandBase, ITogglableCommand {
+    public bool Enabled { get; set; }
+
+    public void UpdateEnabled(string[] args)
+    {
+        Enabled = ArgParse.ParseEnabled(Enabled, args);
+    }
+
+    public void UpdateEnabledAndEnsureCheats(string[] args)
+    {
+        UpdateEnabled(args);
+        if (Enabled)
         {
-            enabled = !enabled;
+            Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabled();
         }
-        else if (!bool.TryParse(args[0], out bool result))
-        {
-            MoreCommandsPlugin.Logger.LogInfo($"Unable to parse `{string.Join(" ", args)}`, arg needs to be a boolean (true/false/0/1).");
-            return;
-        }
-        else
-        {
-            enabled = result;
-        }
+    }
+
+    public sealed override Action<string[]> GetCallback()
+    {
+        return UpdateEnabledAndEnsureCheats + GetLogicCallback();
     }
 
     public static string[] WhenEnabled(bool enabled)
