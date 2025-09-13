@@ -4,7 +4,7 @@ using MoreCommands.Common;
 
 namespace MoreCommands.Commands;
 
-// explore = noclip + godmode + deathgoo-stop + fullbright + infinitestamina
+// explore = freerun + noclip
 public static class ExploreCommand
 {
     public static string[] Aliases => ["explore"];
@@ -20,12 +20,8 @@ public static class ExploreCommand
             {
                 Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabld();
             }
+            FreerunCommand.ApplyFreerunState(Enabled);
             ENT_Player player = ENT_Player.playerObject;
-            player?.SetGodMode(Enabled);
-            player?.InfiniteStaminaCommand(CommandHelpers.WhenEnabled(Enabled));
-            FXManager.Fullbright(CommandHelpers.WhenEnabled(Enabled));
-            DEN_DeathFloor deathgoo = DEN_DeathFloor.instance;
-            deathgoo?.DeathGooToggle(CommandHelpers.WhenDisabled(Enabled));
             player?.Noclip(CommandHelpers.WhenEnabled(Enabled));
         };
     }

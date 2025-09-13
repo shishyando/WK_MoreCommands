@@ -11,6 +11,16 @@ public static class FreerunCommand
     public static CommandTag Tag => CommandTag.Player;
     public static bool Enabled;
 
+    public static void ApplyFreerunState(bool enabled)
+    {
+        ENT_Player player = ENT_Player.playerObject;
+        player?.SetGodMode(enabled);
+        player?.InfiniteStaminaCommand(CommandHelpers.WhenEnabled(enabled));
+        FXManager.Fullbright(CommandHelpers.WhenEnabled(enabled));
+        DEN_DeathFloor deathgoo = DEN_DeathFloor.instance;
+        deathgoo?.DeathGooToggle(CommandHelpers.WhenDisabled(enabled));
+    }
+
     public static Action<string[]> GetCallback()
     {
         return args =>
@@ -20,12 +30,7 @@ public static class FreerunCommand
             {
                 Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabld();
             }
-            ENT_Player player = ENT_Player.playerObject;
-            player?.SetGodMode(Enabled);
-            player?.InfiniteStaminaCommand(CommandHelpers.WhenEnabled(Enabled));
-            FXManager.Fullbright(CommandHelpers.WhenEnabled(Enabled));
-            DEN_DeathFloor deathgoo = DEN_DeathFloor.instance;
-            deathgoo?.DeathGooToggle(CommandHelpers.WhenDisabled(Enabled));
+            ApplyFreerunState(Enabled);
         };
     }
 }

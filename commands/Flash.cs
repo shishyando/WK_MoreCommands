@@ -4,25 +4,23 @@ using MoreCommands.Common;
 
 namespace MoreCommands.Commands;
 
-// flash = freerun + speedy
+// flash = freerun + speedy + cargo
 public static class FlashCommand
 {
     public static string[] Aliases => ["flash"];
     public static CommandTag Tag => CommandTag.Player;
+    public static bool Enabled = true;
 
     public static Action<string[]> GetCallback()
     {
         return args =>
         {
             Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabld();
-            ENT_Player player = ENT_Player.playerObject;
-            if (player == null) return;
-            player?.SetGodMode(true);
-            player?.InfiniteStaminaCommand(["true"]);
-            FXManager.Fullbright(["true"]);
-            DEN_DeathFloor deathgoo = DEN_DeathFloor.instance;
-            deathgoo?.DeathGooToggle(["false"]);
-
+            // Reuse freerun basics
+            FreerunCommand.ApplyFreerunState(true);
+            // Add speedy perks and cargo capacity
+            MovementCommand.GetCallback().Invoke([]);
+            CargoCommand.GetCallback().Invoke([]);
         };
     }
 }
