@@ -6,12 +6,12 @@ using MoreCommands.Common;
 namespace MoreCommands.Commands;
 
 // speedy = get some movement perks `arg` times (1 by default)
-public sealed class MovementCommand : OneshotCommand<MovementCommand>
+public static class MovementCommand
 {
-    public override string[] Aliases => ["speedy"];
-    public override CommandTag Tag => CommandTag.Player;
+    public static string[] Aliases => ["speedy"];
+    public static CommandTag Tag => CommandTag.Player;
 
-    public override Action<string[]> GetCallback()
+    public static Action<string[]> GetCallback()
     {
         return args =>
         {

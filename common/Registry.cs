@@ -1,90 +1,84 @@
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HarmonyLib;
-using UnityEngine.UIElements.Collections;
+using System.Reflection;
 
 namespace MoreCommands.Common;
 
-public static class CommandRegistry
+public static partial class CommandRegistry
 {
-    public static Dictionary<string, ICommand> RegisteredCommands = [];
+    static partial void RegisterAll();
+    public sealed class CommandDescriptor
+    {
+        public string[] Aliases { get; set; }
+        public CommandTag Tag { get; set; }
+        public Action<string[]> Callback { get; set; }
+        public Type DeclaringType { get; set; }
+
+        public Action<string[]> GetCallback() => Callback;
+    }
+
+    public static Dictionary<string, CommandDescriptor> RegisteredCommands = [];
     public static bool Initialized = false;
 
     public static void InitializeCommands()
     {
         if (Initialized) return;
 
-        var assembly = typeof(CommandRegistry).Assembly;
-        var commandTypes = assembly.GetTypes()
-            .Where(t => t.IsClass && !t.IsAbstract && !t.ContainsGenericParameters && DerivedFrom(t, [typeof(TogglableCommand<>), typeof(OneshotCommand<>)]))
-            .ToList();
-
-        foreach (var c in commandTypes)
-        {
-            try
-            {
-                var commandInstance = (ICommand)Activator.CreateInstance(c);
-                Register(commandInstance);
-                MoreCommandsPlugin.Logger.LogInfo($"Registered command: {c.Name} as {commandInstance.Aliases.Join()}");
-            }
-            catch (Exception ex)
-            {
-                MoreCommandsPlugin.Logger.LogError($"Failed to register command {c.Name}: {ex.Message}");
-            }
-        }
+        RegisterAll();
 
         Initialized = true;
     }
 
-    private static bool DerivedFrom(Type type, Type[] possibleParents) {
-        for (var cur = type; cur != null && cur != typeof(object); cur = cur.BaseType)
-        {
-            var def = cur.IsGenericType ? cur.GetGenericTypeDefinition() : cur;
-            if (possibleParents.Contains(def))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static void Register(ICommand command)
+    public static void Register(CommandDescriptor command)
     {
         foreach (string alias in command.Aliases)
         {
             if (RegisteredCommands.ContainsKey(alias))
             {
-                MoreCommandsPlugin.Logger.LogWarning($"Command {command.GetType()} tried to register as {alias}, but it's occupied by {RegisteredCommands.Get(alias).GetType()}, skipping...");
+                MoreCommandsPlugin.Logger.LogWarning($"Command {command.DeclaringType} tried to register as {alias}, but it's occupied by {RegisteredCommands[alias].DeclaringType}, skipping...");
                 continue;
             }
             RegisteredCommands.Add(alias, command);
         }
     }
 
-    public static List<ICommand> GetCommandsByTag(CommandTag tag)
+    public static List<CommandDescriptor> GetCommandsByTag(CommandTag tag)
     {
-        return [.. RegisteredCommands.Values.Where(c => c.Tag == tag)];
+        return [.. RegisteredCommands.Values.Where(c => c.Tag == tag).Distinct()];
     }
 
-    public static List<KeyValuePair<string, ICommand>> GetAllCommands()
+    public static List<KeyValuePair<string, CommandDescriptor>> GetAllCommands()
     {
         return [.. RegisteredCommands];
     }
 
-    public static ICommand GetCommandByName(string cmdName)
+    public static CommandDescriptor GetCommandByName(string cmdName)
     {
-        return RegisteredCommands.Get(cmdName);
+        return RegisteredCommands.TryGetValue(cmdName, out var cmd) ? cmd : null;
     }
 
     public static void DisableAllCommands()
     {
-        foreach (ICommand command in RegisteredCommands.Values)
+        foreach (var type in RegisteredCommands.Values.Select(v => v.DeclaringType).Distinct())
         {
-            if (command is ITogglableCommand toggleableCommand)
+            try
             {
-                toggleableCommand.Enabled = false;
+                var prop = type.GetProperty("Enabled", BindingFlags.Public | BindingFlags.Static);
+                if (prop != null && prop.PropertyType == typeof(bool) && prop.CanWrite)
+                {
+                    prop.SetValue(null, false);
+                    continue;
+                }
+                var field = type.GetField("Enabled", BindingFlags.Public | BindingFlags.Static);
+                if (field != null && field.FieldType == typeof(bool))
+                {
+                    field.SetValue(null, false);
+                }
+            }
+            catch (Exception ex)
+            {
+                MoreCommandsPlugin.Logger.LogWarning($"Failed to disable command {type.Name}: {ex.Message}");
             }
         }
     }

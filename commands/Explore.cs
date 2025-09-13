@@ -5,27 +5,28 @@ using MoreCommands.Common;
 namespace MoreCommands.Commands;
 
 // explore = noclip + godmode + deathgoo-stop + fullbright + infinitestamina
-public sealed class ExploreCommand : TogglableCommand<ExploreCommand>
+public static class ExploreCommand
 {
-    public override string[] Aliases => ["explore"];
-    public override CommandTag Tag => CommandTag.Player;
+    public static string[] Aliases => ["explore"];
+    public static CommandTag Tag => CommandTag.Player;
+    public static bool Enabled;
 
-    public override Action<string[]> GetCallback()
+    public static Action<string[]> GetCallback()
     {
         return args =>
         {
-            UpdateEnabled(args);
+            CommandHelpers.UpdateEnabled(ref Enabled, args);
             if (Enabled)
             {
                 Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabld();
             }
             ENT_Player player = ENT_Player.playerObject;
             player?.SetGodMode(Enabled);
-            player?.InfiniteStaminaCommand(WhenEnabled());
-            FXManager.Fullbright(WhenEnabled());
+            player?.InfiniteStaminaCommand(CommandHelpers.WhenEnabled(Enabled));
+            FXManager.Fullbright(CommandHelpers.WhenEnabled(Enabled));
             DEN_DeathFloor deathgoo = DEN_DeathFloor.instance;
-            deathgoo?.DeathGooToggle(WhenDisabled());
-            player?.Noclip(WhenEnabled());
+            deathgoo?.DeathGooToggle(CommandHelpers.WhenDisabled(Enabled));
+            player?.Noclip(CommandHelpers.WhenEnabled(Enabled));
         };
     }
 }

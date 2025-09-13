@@ -5,12 +5,12 @@ using MoreCommands.Common;
 namespace MoreCommands.Commands;
 
 // flash = freerun + speedy
-public sealed class FlashCommand : OneshotCommand<FlashCommand>
+public static class FlashCommand
 {
-    public override string[] Aliases => ["flash"];
-    public override CommandTag Tag => CommandTag.Player;
+    public static string[] Aliases => ["flash"];
+    public static CommandTag Tag => CommandTag.Player;
 
-    public override Action<string[]> GetCallback()
+    public static Action<string[]> GetCallback()
     {
         return args =>
         {

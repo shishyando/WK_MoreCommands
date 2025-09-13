@@ -21,31 +21,38 @@
     </RestoreAdditionalProjectSources>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PythonCmd Condition="'$(OS)' == 'Windows_NT'">py -3</PythonCmd>
+    <PythonCmd Condition="'$(OS)' != 'Windows_NT'">python3</PythonCmd>
+    <ThunderstoreScript>$([System.IO.Path]::Combine('$(ProjectDir)','thunderstore.py'))</ThunderstoreScript>
+    <ReadmePath>$([System.IO.Path]::Combine('$(ProjectDir)','README.md'))</ReadmePath>
+    <IconPath>$([System.IO.Path]::Combine('$(ProjectDir)','img','icon.png'))</IconPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.*" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
     <PackageReference Include="UnityEngine.Modules" Version="2022.3.32" IncludeAssets="compile" />
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3"
+      PrivateAssets="all" />
     <PackageReference Include="NETStandard.Library" Version="2.0.3" />
     <PackageReference Include="Microsoft.NETCore.Platforms" Version="7.0.4" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="generators/MoreCommands.Generator/MoreCommands.Generator.csproj"
+      OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="generators/**/*.cs" />
+    <None Include="generators/**/*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>lib\Assembly-CSharp.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>lib\UnityEngine.UI.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.TextMeshPro">
-      <HintPath>lib\Unity.TextMeshPro.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>lib\UnityEngine.CoreModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="ALINE">
@@ -68,7 +75,8 @@
   </Target>
 
   <Target Name="ThunderstorePackage" AfterTargets="Build">
-    <Exec Command='python "$(ProjectDir)thunderstore.py" --out "$(ZipOutputPath)" --readme "$(ProjectDir)README.md" --manifest "$(ProjectDir)manifest.json" --icon "$(ProjectDir)img\icon.png" --dll "$(TargetPath)"' />
+    <Exec
+      Command='$(PythonCmd) "$(ThunderstoreScript)" --out "$(ZipOutputPath)" --readme "$(ReadmePath)" --manifest "$(ManifestOutput)" --icon "$(IconPath)" --dll "$(TargetPath)"' />
   </Target>
 
 </Project>
