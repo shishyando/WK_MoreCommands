@@ -38,10 +38,7 @@ public abstract class TogglableCommandBase : CommandBase, ITogglableCommand {
     public void UpdateEnabledAndEnsureCheats(string[] args)
     {
         UpdateEnabled(args);
-        if (Enabled)
-        {
-            Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabled();
-        }
+        if (Enabled) Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabled();
     }
 
     public sealed override Action<string[]> GetCallback()
