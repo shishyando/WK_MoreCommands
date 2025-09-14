@@ -9,6 +9,7 @@ public sealed class ExploreCommand : TogglableCommandBase
     public override string[] Aliases => ["explore"];
     public override CommandTag Tag => CommandTag.Player;
     public override string Description => "freerun + noclip";
+    public override bool CheatsOnly => true;
 
     protected override Action<string[]> GetLogicCallback()
     {

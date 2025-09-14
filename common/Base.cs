@@ -1,4 +1,5 @@
 using System;
+using UnityEngine.PlayerLoop;
 
 namespace MoreCommands.Common;
 
@@ -7,6 +8,7 @@ public interface ICommand {
     string[] Aliases { get; }
     CommandTag Tag { get; }
     string Description { get; }
+    bool CheatsOnly { get; }
     Action<string[]> GetCallback();
 }
 
@@ -19,31 +21,33 @@ public abstract class CommandBase : ICommand {
     public abstract string[] Aliases { get; }
     public abstract CommandTag Tag { get; }
     public abstract string Description { get; }
+
+    public abstract bool CheatsOnly { get; }
     protected abstract Action<string[]> GetLogicCallback();
+
+    public void EnsureCheats(string[] args)
+    {
+        if (CheatsOnly) Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabled();
+    }
 
     public virtual Action<string[]> GetCallback()
     {
-        return GetLogicCallback();
+        return EnsureCheats + GetLogicCallback();
     }
 }
 
 public abstract class TogglableCommandBase : CommandBase, ITogglableCommand {
     public bool Enabled { get; set; }
+    
 
     public void UpdateEnabled(string[] args)
     {
         Enabled = ArgParse.ParseEnabled(Enabled, args);
     }
 
-    public void UpdateEnabledAndEnsureCheats(string[] args)
-    {
-        UpdateEnabled(args);
-        if (Enabled) Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabled();
-    }
-
     public sealed override Action<string[]> GetCallback()
     {
-        return UpdateEnabledAndEnsureCheats + GetLogicCallback();
+        return UpdateEnabled + (Action<string[]>)EnsureCheats + GetLogicCallback();
     }
 
     public static string[] WhenEnabled(bool enabled)

@@ -16,7 +16,7 @@ public class MoreCommandsPlugin : BaseUnityPlugin
     {
         Logger = base.Logger;
         CommandRegistry.InitializeCommands();
-        Harmony.PatchAll(typeof(Patches.ENT_Player_Patcher));
+        Harmony.PatchAll();
         Logger.LogInfo($"{MyPluginInfo.PLUGIN_GUID} is loaded");
 
         SceneManager.sceneUnloaded += OnSceneUnloaded;
@@ -25,7 +25,7 @@ public class MoreCommandsPlugin : BaseUnityPlugin
     public static void OnSceneUnloaded(Scene s) {
         if (s.name == "Game-Main")
         {
-            CommandRegistry.DisableAllCommands();
+            CommandRegistry.DisableAllTogglableCommands();
         }
     }
 }

@@ -10,6 +10,7 @@ public sealed class MovementCommand : CommandBase
     public override string[] Aliases => ["speedy"];
     public override CommandTag Tag => CommandTag.Player;
     public override string Description => "get some movement perks `arg` times (1 by default)";
+    public override bool CheatsOnly => true;
 
     protected override Action<string[]> GetLogicCallback()
     {

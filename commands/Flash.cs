@@ -9,6 +9,7 @@ public sealed class FlashCommand : CommandBase
     public override string[] Aliases => ["flash"];
     public override CommandTag Tag => CommandTag.Player;
     public override string Description => "freerun + speedy + cargo";
+    public override bool CheatsOnly => true;
 
     protected override Action<string[]> GetLogicCallback()
     {
