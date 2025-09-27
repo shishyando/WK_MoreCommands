@@ -24,7 +24,7 @@
   <PropertyGroup>
     <PythonCmd Condition="'$(OS)' == 'Windows_NT'">py -3</PythonCmd>
     <PythonCmd Condition="'$(OS)' != 'Windows_NT'">python3</PythonCmd>
-    <ThunderstoreScript>$([System.IO.Path]::Combine('$(ProjectDir)','thunderstore.py'))</ThunderstoreScript>
+    <ThunderstoreScript>$([System.IO.Path]::Combine('$(ProjectDir)','scripts','thunderstore.py'))</ThunderstoreScript>
     <ReadmePath>$([System.IO.Path]::Combine('$(ProjectDir)','README.md'))</ReadmePath>
     <IconPath>$([System.IO.Path]::Combine('$(ProjectDir)','img','icon.png'))</IconPath>
   </PropertyGroup>
