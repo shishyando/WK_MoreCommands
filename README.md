@@ -21,10 +21,10 @@ Togglable commands can be run with arguments `true`/`false`
 
 `man` example:
 <div align="left">
-<img src="https://raw.githubusercontent.com/shishyando/WK_MoreCommands/main/img/man.png" style="width: 538px; height: 410px; object-fit: contain;">
+<img src="https://raw.githubusercontent.com/shishyando/WK_MoreCommands/main/img/man.png" style="width: 820px; height: 410px; object-fit: contain;">
 </div>
 
 List perks (`lp`) example:
 <div align="left">
-<img src="https://raw.githubusercontent.com/shishyando/WK_MoreCommands/main/img/lp.png" style="width: 538px; height: 410px; object-fit: contain;">
+<img src="https://raw.githubusercontent.com/shishyando/WK_MoreCommands/main/img/lp.png" style="width: 820px; height: 410px; object-fit: contain;">
 </div>
