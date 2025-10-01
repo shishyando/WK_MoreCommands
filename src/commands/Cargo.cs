@@ -8,7 +8,7 @@ public sealed class CargoCommand : CommandBase
 {
     public override string[] Aliases => ["cargo"];
     public override CommandTag Tag => CommandTag.Player;
-    public override string Description => "backstrength times `arg`, (9 by default)";
+    public override string Description => "max backstrength";
     public override bool CheatsOnly => true;
 
     protected override Action<string[]> GetLogicCallback()
@@ -16,10 +16,7 @@ public sealed class CargoCommand : CommandBase
         return args =>
         {
             Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabled();
-            ENT_Player player = ENT_Player.playerObject;
-            if (player == null) return;
-
-            for (int i = 0; i < ArgParse.GetMult(args, 9); ++i) player.AddPerk(["perk_backstrengtheners"]);
+            PerkChanger.MaxOutPerk("Perk_BackStrengheners");
         };
     }
 }

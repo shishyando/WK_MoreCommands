@@ -14,7 +14,7 @@ public sealed class FlashCommand : CommandBase
     protected override Action<string[]> GetLogicCallback()
     {
         return CommandRegistry.GetCallback<FreerunCommand>()
-            + CommandRegistry.GetCallback<MovementCommand>()
+            + CommandRegistry.GetCallback<SpeedyCommand>()
             + CommandRegistry.GetCallback<CargoCommand>();
     }
 }

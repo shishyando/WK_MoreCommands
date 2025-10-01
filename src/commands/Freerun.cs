@@ -8,7 +8,7 @@ public sealed class FreerunCommand : TogglableCommandBase
 {
     public override string[] Aliases => ["freerun"];
     public override CommandTag Tag => CommandTag.Player;
-    public override string Description => "godmode + deathgoo-stop + fullbright + infinitestamina";
+    public override string Description => "godmode + deathgoo-stop + fullbright + infinitestamina + notarget";
     public override bool CheatsOnly => true;
 
     protected override Action<string[]> GetLogicCallback()
@@ -21,6 +21,7 @@ public sealed class FreerunCommand : TogglableCommandBase
             FXManager.Fullbright(WhenEnabled(Enabled));
             DEN_DeathFloor deathgoo = DEN_DeathFloor.instance;
             deathgoo?.DeathGooToggle(WhenDisabled(Enabled));
+            CL_GameManager.gMan?.NoTarget(WhenEnabled(Enabled));
         };
     }
 }

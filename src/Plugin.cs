@@ -9,15 +9,15 @@ namespace MoreCommands;
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class MoreCommandsPlugin : BaseUnityPlugin
 {
-    public static new ManualLogSource Logger;
+    public static ManualLogSource Beep;
     private readonly Harmony Harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
 
     private void Awake()
     {
-        Logger = base.Logger;
+        Beep = Logger;
         CommandRegistry.InitializeCommands();
         Harmony.PatchAll();
-        Logger.LogInfo($"{MyPluginInfo.PLUGIN_GUID} is loaded");
+        Beep.LogInfo($"{MyPluginInfo.PLUGIN_GUID} is loaded");
 
         SceneManager.sceneUnloaded += OnSceneUnloaded;
     }
