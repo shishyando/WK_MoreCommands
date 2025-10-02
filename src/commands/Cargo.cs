@@ -16,7 +16,7 @@ public sealed class CargoCommand : CommandBase
         return args =>
         {
             Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabled();
-            PerkChanger.MaxOutPerk("Perk_BackStrengheners");
+            PerkChanger.MaxOutPerk("Perk_BackStrengtheners");
         };
     }
 }

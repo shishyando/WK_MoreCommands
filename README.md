@@ -28,3 +28,8 @@ List perks (`lp`) example:
 <div align="left">
 <img src="https://raw.githubusercontent.com/shishyando/WK_MoreCommands/main/img/lp.png" style="width: 820px; height: 410px; object-fit: contain;">
 </div>
+
+`flash` example:
+<div align="left">
+<img src="https://raw.githubusercontent.com/shishyando/WK_MoreCommands/main/img/flash.png" style="width: 820px; height: 410px; object-fit: contain;">
+</div>

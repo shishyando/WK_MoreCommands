@@ -19,10 +19,10 @@ public static class PerkChanger
             return;
         }
 
-
-        Perk perk = UnityEngine.Object.Instantiate(CL_AssetManager.GetPerkAsset(perkId, ""));
-        if (perk != null)
+        Perk template = CL_AssetManager.GetPerkAsset(perkId, "");
+        if (template != null)
         {
+            Perk perk = UnityEngine.Object.Instantiate(template);
             int toAdd = perk.stackMax;
             // MoreCommandsPlugin.Beep.LogInfo($"(NEW) perk={perk.GetTitle()}: {perk.stackAmount}/{perk.stackMax}, adding={toAdd}");
             if (toAdd > 0)
