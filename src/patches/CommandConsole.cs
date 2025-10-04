@@ -16,5 +16,12 @@ public static class CommandConsole_Patcher
                 CommandConsole.AddCommand(alias, c.GetCallback(), false);
             }
         }
+        foreach (var c in CommandRegistry.GetCommandsByTag(CommandTag.World))
+        {
+            foreach (var alias in c.Aliases)
+            {
+                CommandConsole.AddCommand(alias, c.GetCallback(), false);
+            }
+        }
     }
 }

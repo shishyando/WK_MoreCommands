@@ -4,16 +4,18 @@ Console commands factory for White Knuckle. Also adds a few commands.
 
 ### Console commands added:
 
-| Command                            | Description                                                                 | Type      | Enables cheats  |
-|------------------------------------|-----------------------------------------------------------------------------|:---------:|:---------------:|
-| `man`, `mhelp`, `morecommandshelp` | List MoreCommands with descriptions, filtered by `arg`                      | Oneshot   | `-`             |
-| `lp`                               | List perks info, filtered by `arg`                                          | Oneshot   | `-`             |
-| `freerun`                          | `godmode` + `deathgoo-stop` + `fullbright` + `infinitestamina` + `notarget` | Togglable | `+`             |
-| `explore`                          | `freerun` + `noclip`                                                        | Togglable | `+`             |
-| `cargo`                            | Max Backstrength                                                            | Oneshot   | `+`             |
-| `speedy`                           | Get some movement perks                                                     | Oneshot   | `+`             |
-| `flash`                            | `freerun` + `speedy` + `cargo`                                              | Togglable | `+`             |
-| `sv_gravity`, `grav`               | Change player gravity multiplier                                            | Oneshot   | `+`             |
+| Command                            | Description                                                                                                         | Type      | Enables cheats  |
+|------------------------------------|---------------------------------------------------------------------------------------------------------------------|:---------:|:---------------:|
+| `man`, `mhelp`, `morecommandshelp` | List MoreCommands with descriptions, filtered by `arg`                                                              | Oneshot   | `-`             |
+| `lp`                               | List perks info, filtered by `arg`                                                                                  | Oneshot   | `-`             |
+| `freerun`                          | `godmode` + `deathgoo-stop` + `fullbright` + `infinitestamina` + `notarget`                                         | Togglable | `+`             |
+| `explore`                          | `freerun` + `noclip`                                                                                                | Togglable | `+`             |
+| `cargo`                            | Max Backstrength                                                                                                    | Oneshot   | `+`             |
+| `speedy`                           | Get some movement perks                                                                                             | Oneshot   | `+`             |
+| `flash`                            | `freerun` + `speedy` + `cargo`                                                                                      | Togglable | `+`             |
+| `sv_gravity`, `grav`               | Change player gravity multiplier                                                                                    | Oneshot   | `+`             |
+| `tp`                               | Teleport player to `arg` (e.g. `tp abyss = cheats + teleportplayertolevel m3_habitation_lab_ending`)                | Oneshot   | `+`             |
+| `grubby`                           | Grab anything (like after a sluggrub)                                                                               | Togglable | `+`             |
 
 Togglable commands can be run with arguments `true`/`false`
 
