@@ -12,10 +12,11 @@ Console commands factory for White Knuckle. Also adds a few commands.
 | `explore`                          | `freerun` + `noclip`                                                                                                | Togglable | `+`             |
 | `cargo`                            | Max Backstrength                                                                                                    | Oneshot   | `+`             |
 | `speedy`                           | Get some movement perks                                                                                             | Oneshot   | `+`             |
-| `flash`                            | `freerun` + `speedy` + `cargo`                                                                                      | Togglable | `+`             |
+| `flash`                            | `freerun` + `buff`                                                                                                  | Togglable | `+`             |
 | `sv_gravity`, `grav`               | Change player gravity multiplier                                                                                    | Oneshot   | `+`             |
 | `tp`                               | Teleport player to `arg` (e.g. `tp abyss = cheats + teleportplayertolevel m3_habitation_lab_ending`)                | Oneshot   | `+`             |
 | `grubby`                           | Grab anything (like after a sluggrub)                                                                               | Togglable | `+`             |
+| `buff`                             | Buff everything, but without perks                                                                                  | Togglable | `+`             |
 
 Togglable commands can be run with arguments `true`/`false`
 
