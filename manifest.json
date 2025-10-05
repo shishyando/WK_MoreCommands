@@ -1,7 +1,7 @@
 {
 "name": "MoreCommands",
-"version_number": "0.6.1",
+"version_number": "0.7.0",
 "website_url": "https://github.com/shishyando/WK_MoreCommands",
-"description": "Console commands factory for White Knuckle. Also adds a few commands.",
+"description": "Useful console commands for White Knuckle.",
 "dependencies": ["BepInEx-BepInExPack-5.4.2100"]
 }

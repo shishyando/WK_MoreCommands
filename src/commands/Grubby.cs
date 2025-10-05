@@ -12,19 +12,17 @@ public sealed class GrubbyCommand : TogglableCommandBase
     public override string Description => "grab anything";
     public override bool CheatsOnly => true;
 
-    private readonly string BuffId = "grubbyCommand";
+    private readonly string BuffId = $"{MyPluginInfo.PLUGIN_GUID}.grubbyCommand";
 
     protected override Action<string[]> GetLogicCallback()
     {
         return args =>
         {
-            MoreCommandsPlugin.Beep.LogInfo("beep");
             Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabled();
             ENT_Player player = ENT_Player.playerObject;
             if (player == null) return;
             if (Enabled)
             {
-                MoreCommandsPlugin.Beep.LogInfo("enabled");
                 BuffContainer grabBuffC = new()
                 {
                     id = BuffId,

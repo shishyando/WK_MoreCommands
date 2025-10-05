@@ -8,13 +8,12 @@ public sealed class FlashCommand : CommandBase
 {
     public override string[] Aliases => ["flash"];
     public override CommandTag Tag => CommandTag.Player;
-    public override string Description => "freerun + speedy + cargo";
+    public override string Description => "freerun + buff";
     public override bool CheatsOnly => true;
 
     protected override Action<string[]> GetLogicCallback()
     {
         return CommandRegistry.GetCallback<FreerunCommand>()
-            + CommandRegistry.GetCallback<SpeedyCommand>()
-            + CommandRegistry.GetCallback<CargoCommand>();
+            + CommandRegistry.GetCallback<BuffCommand>();
     }
 }
