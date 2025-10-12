@@ -38,7 +38,6 @@ public sealed class SpeedyCommand : CommandBase
     {
         return args =>
         {
-            Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabled();
             foreach (var perkId in MovementPerks)
             {
                 PerkChanger.MaxOutPerk(perkId);

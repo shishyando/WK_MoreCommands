@@ -18,7 +18,6 @@ public sealed class BuffCommand : TogglableCommandBase
     {
         return args =>
         {
-            Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabled();
             ENT_Player player = ENT_Player.playerObject;
             if (player == null) return;
             if (Enabled)

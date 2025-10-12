@@ -16,7 +16,6 @@ public sealed class GravityCommand : CommandBase
     {
         return args =>
         {
-            Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabled();
             ENT_Player player = ENT_Player.playerObject;
             if (args.Length == 0) {
                 player.SetGravityMult(1f);

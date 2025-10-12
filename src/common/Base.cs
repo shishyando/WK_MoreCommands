@@ -30,9 +30,14 @@ public abstract class CommandBase : ICommand {
         if (CheatsOnly) Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabled();
     }
 
+    public void PrintSuffix(string[] args)
+    {
+        Accessors.CommandConsoleAccessor.EchoToConsole($"<color=grey>---------------------</color>");
+    }
+
     public virtual Action<string[]> GetCallback()
     {
-        return EnsureCheats + GetLogicCallback();
+        return EnsureCheats + GetLogicCallback() + PrintSuffix;
     }
 }
 

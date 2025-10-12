@@ -7,11 +7,11 @@ using MoreCommands.Common;
 namespace MoreCommands.Commands;
 
 
-public sealed class GiveCommand : CommandBase
+public sealed class GiveRightCommand : CommandBase
 {
-    public override string[] Aliases => ["give"];
+    public override string[] Aliases => ["right"];
     public override CommandTag Tag => CommandTag.Player;
-    public override string Description => "give item to player";
+    public override string Description => "give item to right hand or inventory";
     public override bool CheatsOnly => true;
 
     protected override Action<string[]> GetLogicCallback()
@@ -23,13 +23,15 @@ public sealed class GiveCommand : CommandBase
                 Accessors.CommandConsoleAccessor.EchoToConsole($"Available items:\n{ItemGod.PrefabNames("\n")}");
                 return;
             }
-            var clone = ItemGod.FindAndClone(args[0]);
-            if (clone == null)
+            var item = ItemGod.FindAndClone(args[0]);
+            if (item == null)
             {
                 Accessors.CommandConsoleAccessor.EchoToConsole($"No such item: {args[0]}");
                 return;
             }
-            Inventory.instance.AddItemToInventoryScreen(new UnityEngine.Vector3(0f, 0f, 1f) + UnityEngine.Random.insideUnitSphere * 0.01f, clone, true, false);
+            var clone = item.GetClone();
+            clone.bagRotation = new UnityEngine.Quaternion(1, 2, 3, 4);
+            Inventory.instance.AddItemToHand(clone, 1);
         };
     }
 }
