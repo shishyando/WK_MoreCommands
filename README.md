@@ -24,7 +24,7 @@ Togglable commands can be run with arguments `true`/`false`
 
 ### Showcase
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/ET25Z-EP7oI?si=y19TRxNSqeawMoDC" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+[![Showcase](https://img.youtube.com/vi/ET25Z-EP7oI/maxresdefault.jpg)](https://www.youtube.com/watch?v=ET25Z-EP7oI)
 
 ### Screenshots
 
