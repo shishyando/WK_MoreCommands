@@ -22,7 +22,7 @@ Console commands factory for White Knuckle. Also adds a few commands.
 
 Togglable commands can be run with arguments `true`/`false`
 
-### Showcase
+### Showcase YouTube video (click the image!)
 
 [![Showcase](https://img.youtube.com/vi/ET25Z-EP7oI/maxresdefault.jpg)](https://www.youtube.com/watch?v=ET25Z-EP7oI)
 

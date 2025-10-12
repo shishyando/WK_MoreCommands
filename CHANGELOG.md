@@ -1,5 +1,9 @@
 # Version 0.8.0 "Give" update (13 oct 2025)
 
+### Showcase YouTube video (click the image!)
+
+[![Showcase](https://img.youtube.com/vi/ET25Z-EP7oI/maxresdefault.jpg)](https://www.youtube.com/watch?v=ET25Z-EP7oI)
+
 ### Added:
 * `give`, `left`, `right` commands to give items (inventory/left hand/right hand respectively)
 * `banhammer` command which gives you a banhammer to remove things on hit
