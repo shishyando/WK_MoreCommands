@@ -1,3 +1,11 @@
+# Version 0.9.0 noclipspeed update (26 oct 2025)
+
+### Added:
+* `ns`, `noclipspeed` command which sets noclip speed multiplier
+
+### Todo:
+* ???
+
 # Version 0.8.0 "Give" update (13 oct 2025)
 
 ### Showcase YouTube video (click the image!)

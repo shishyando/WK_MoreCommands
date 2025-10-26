@@ -10,6 +10,7 @@ Console commands factory for White Knuckle. Also adds a few commands.
 | `lp`                               | List perks info, filtered by `arg` (substring search)                                                                             | Oneshot   | `-`             |
 | `freerun`                          | `godmode` + `deathgoo-stop` + `fullbright` + `infinitestamina` + `notarget`                                                       | Togglable | `+`             |
 | `explore`                          | `freerun` + `noclip`                                                                                                              | Togglable | `+`             |
+| `ns`, `noclipspeed`                | Sets noclip speed multiplier, default is 1                                                                                        | Oneshot   | `+`             |
 | `cargo`                            | Max Backstrength                                                                                                                  | Oneshot   | `+`             |
 | `speedy`                           | Get some movement perks                                                                                                           | Oneshot   | `+`             |
 | `grubby`                           | Grab anything (like after a sluggrub)                                                                                             | Togglable | `+`             |

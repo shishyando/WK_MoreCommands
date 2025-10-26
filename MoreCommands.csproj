@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <BepInExPluginGuid>shishyando.WK.MoreCommands</BepInExPluginGuid>
     <BepInExPluginName>MoreCommands</BepInExPluginName>
-    <Version>0.8.1</Version>
+    <Version>0.9.0</Version>
     <Description>Useful console commands for White Knuckle.</Description>
     <PluginUrl>https://github.com/shishyando/WK_MoreCommands</PluginUrl>
     <DependenciesJson>["BepInEx-BepInExPack-5.4.2100"]</DependenciesJson>
