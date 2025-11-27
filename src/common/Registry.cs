@@ -30,7 +30,7 @@ public static partial class CommandRegistry
         }
         if (failedAliases.Count > 0)
         {
-            MoreCommandsPlugin.Beep.LogWarning($"Failed to register command {command.GetType()}:\n{failedAliases.Join(x => $"\t{x.Key} taken by {x.Value}", "\n")}");
+            Plugin.Beep.LogWarning($"Failed to register command {command.GetType()}:\n{failedAliases.Join(x => $"\t{x.Key} taken by {x.Value}", "\n")}");
         }
         else
         {
@@ -56,7 +56,7 @@ public static partial class CommandRegistry
 
     public static Action<string[]> GetCallback<T>() where T : ICommand
     {
-        return RegisteredCommands.FirstOrDefault(c => c.GetType() == typeof(T))?.GetCallback() ?? (args => { MoreCommandsPlugin.Beep.LogWarning($"Command {typeof(T)} not found"); });
+        return RegisteredCommands.FirstOrDefault(c => c.GetType() == typeof(T))?.GetCallback() ?? (args => { Plugin.Beep.LogWarning($"Command {typeof(T)} not found"); });
     }
 
     public static void DisableAllTogglableCommands()

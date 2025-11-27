@@ -9,7 +9,7 @@ public sealed class BuffCommand : TogglableCommandBase
 {
     public override string[] Aliases => ["buff"];
     public override CommandTag Tag => CommandTag.Player;
-    public override string Description => "buff everything, but without perks";
+    public override string Description => "buff everything, without perks";
     public override bool CheatsOnly => true;
 
     private readonly string BuffId = $"{MyPluginInfo.PLUGIN_GUID}.buffCommand";

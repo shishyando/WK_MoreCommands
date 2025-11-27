@@ -17,16 +17,11 @@ public sealed class BetterListPerksCommand : CommandBase
         {
             foreach (Perk perk in CL_AssetManager.GetFullCombinedAssetDatabase().perkAssets)
             {
-                if (args.Length == 0 || Has(perk.name, args[0]) || Has(perk.description, args[0]) || Has(perk.id, args[0]))
+                if (args.Length == 0 || Helpers.Substr(perk.name, args[0]) || Helpers.Substr(perk.description, args[0]) || Helpers.Substr(perk.id, args[0]))
                 {
                     Accessors.CommandConsoleAccessor.EchoToConsole($"- {perk.GetTitle()} (<color=grey>{perk.id}</color>)\n{perk.GetDescription(includeFlavor: false)}</color></color></color>\n"); // in case some tags were left unclosed
                 }
             }
         };
-    }
-
-    private bool Has(string text, string check)
-    {
-        return text?.IndexOf(check, StringComparison.OrdinalIgnoreCase) >= 0;
     }
 }

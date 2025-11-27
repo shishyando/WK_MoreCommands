@@ -41,9 +41,9 @@ public sealed class ManCommand : CommandBase
     {
         return tag switch
         {
-            CommandTag.Player => "#dafeffff",
-            CommandTag.World => "#cfffe9ff",
-            CommandTag.Console => "#f4e2ffff",
+            CommandTag.Player => "#adf2f5ff",
+            CommandTag.World => "#bb8135ff",
+            CommandTag.Console => "#973bd1ff",
             _ => "white",
         };
     }

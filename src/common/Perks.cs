@@ -32,6 +32,6 @@ public static class PerkChanger
             return;
         }
 
-        MoreCommandsPlugin.Beep.LogWarning($"Perk {perkId} not found!");
+        Plugin.Beep.LogWarning($"Perk {perkId} not found!");
     }
 }

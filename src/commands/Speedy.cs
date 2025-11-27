@@ -7,9 +7,9 @@ using MoreCommands.Common;
 namespace MoreCommands.Commands;
 
 
-public sealed class SpeedyCommand : CommandBase
+public sealed class SpeedyPerksCommand : CommandBase
 {
-    public override string[] Aliases => ["speedy"];
+    public override string[] Aliases => ["speedyperks"];
     public override CommandTag Tag => CommandTag.Player;
     public override string Description => "get some movement perks";
     public override bool CheatsOnly => true;

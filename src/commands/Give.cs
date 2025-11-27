@@ -20,10 +20,10 @@ public sealed class GiveCommand : CommandBase
         {
             if (args.Length == 0)
             {
-                Accessors.CommandConsoleAccessor.EchoToConsole($"Available items:\n{ItemGod.PrefabNames("\n")}");
+                Accessors.CommandConsoleAccessor.EchoToConsole($"Available items:\n{PrefabsItems.ItemPrefabNames("\n")}");
                 return;
             }
-            var clone = ItemGod.FindAndClone(args[0]);
+            var clone = PrefabsItems.FindAndCloneItem(args[0]);
             if (clone == null)
             {
                 Accessors.CommandConsoleAccessor.EchoToConsole($"No such item: {args[0]}");

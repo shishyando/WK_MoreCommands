@@ -1,10 +1,11 @@
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace MoreCommands.Common;
 
-public static class ItemGod
+public static class PrefabsItems
 {
     public static List<Item> GetAllItems()
     {
@@ -26,21 +27,21 @@ public static class ItemGod
         return GetAllItems().Find(x => x.prefabName.ToLower() == prefabName);
     }
 
-    public static Item FindAndClone(string prefabSubstr)
+    public static Item FindAndCloneItem(string prefabSubstr)
     {
         var item = GetAllItems().Find(x => x.prefabName.ToLower().Contains(prefabSubstr));
         if (item == null) return null;
         return item.GetClone();
     }
 
-    public static List<string> PrefabNames()
+    public static List<string> ItemPrefabNames()
     {
         List<Item> items = GetAllItems();
         return [.. items.Select(x => x.prefabName.ToLower())];
     }
 
-    public static string PrefabNames(string delimiter)
+    public static string ItemPrefabNames(string delimiter)
     {
-        return string.Join(delimiter, PrefabNames());
+        return string.Join(delimiter, ItemPrefabNames());
     }
 }

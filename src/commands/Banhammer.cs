@@ -18,7 +18,7 @@ public sealed class BanhammerCommand : CommandBase
     {
         return args =>
         {
-            Inventory.instance.AddItemToHand(ItemGod.GetItemByPrefabName("item_banhammer").GetClone(), 0);
+            Inventory.instance.AddItemToHand(PrefabsItems.GetItemByPrefabName("item_banhammer").GetClone(), 0);
         };
     }
 }

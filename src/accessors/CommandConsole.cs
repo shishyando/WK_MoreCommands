@@ -27,7 +27,7 @@ public static class CommandConsoleAccessor
         CommandConsole inst = CommandConsole.instance;
         if (inst == null)
         {
-            MoreCommandsPlugin.Beep.LogWarning("CommandConsoleAccessor::EnableCheats instance is null");
+            Plugin.Beep.LogWarning("CommandConsoleAccessor::EnableCheats instance is null");
             return;
         }
         CheatsEnabler(CommandConsole.instance);
@@ -38,7 +38,7 @@ public static class CommandConsoleAccessor
         CommandConsole inst = CommandConsole.instance;
         if (inst == null)
         {
-            MoreCommandsPlugin.Beep.LogWarning("CommandConsoleAccessor::EnableCheats instance is null");
+            Plugin.Beep.LogWarning("CommandConsoleAccessor::EnableCheats instance is null");
             return;
         }
         AddMessageToHistory(inst, msg);
