@@ -13,11 +13,11 @@ public static class OutlinesController
     private static Dictionary<string, Color> _activeOutlines = [];
     private static readonly Dictionary<string, Color> _defaultOutlines = new()
     {
-        {"item_injector", new Color(78, 227, 78)}, // light green
+        {"item_injector", new Color(0.3f, 0.9f, 0.3f)}, // light green
         {"item_blinkeye", Color.magenta},
         {"denizen_sluggrub", Color.yellow},
         {"item_pillbottle", Color.cyan},
-        {"item_food_bar", new Color(150, 75, 0)}, // brown
+        {"item_food_bar", new Color(0.6f, 0.3f, 0)}, // brown
     };
 
     public static bool ToggleDefault()
