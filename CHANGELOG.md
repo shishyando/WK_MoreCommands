@@ -1,5 +1,7 @@
 # Version 0.10.0 Wallhack update (29 nov 2025)
 
+Showcase: https://www.youtube.com/watch?v=KOxQGqisMBs
+
 ### Added:
 * `wh`, `wallhack` allows you to enable colorful outlines for any entity (pickupables, denizens, planks, etc.) with substring search
 * `listentities` replaces in-game `listentities` with more entities and substring search
