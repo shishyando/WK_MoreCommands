@@ -1,5 +1,3 @@
-
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,41 +5,91 @@ namespace MoreCommands.Common;
 
 public static class PrefabsItems
 {
-    public static List<Item> GetAllItems()
+    private static List<Item> _items = [];
+    
+    public static void Initialize(List<Item> items)
+    {
+        _items = items;
+    }
+
+    public static void InitializeFromAssetDatabase()
     {
         var itemPrefabs = CL_AssetManager.GetFullCombinedAssetDatabase().itemPrefabs;
-        List<Item> items = [];
         foreach (UnityEngine.GameObject prefab in itemPrefabs)
         {
             Item_Object component = prefab.GetComponent<Item_Object>();
             if (component != null)
             {
-                items.Add(component.itemData);
+                _items.Add(component.itemData);
             }
         }
-        return items;
     }
 
-    public static Item GetItemByPrefabName(string prefabName)
+    // Item
+    // All
+    public static List<Item> AllItems()
     {
-        return GetAllItems().Find(x => x.prefabName.ToLower() == prefabName);
+        if (_items.Count == 0) InitializeFromAssetDatabase();
+        return _items;
+    }
+    // Filtered
+    public static List<Item> FilterItems(string filter)
+    {
+        return AllItems().FindAll(x => { return Helpers.Substr(x.prefabName, filter.ToLower()); });
+    }
+    // Any
+    public static Item AnyItem(string filter)
+    {
+        return FilterItems(filter).FirstOrDefault();
+    }
+    // Any clone
+    public static Item AnyItemClone(string filter)
+    {
+        return FilterItems(filter).FirstOrDefault()?.GetClone();
+    }
+ 
+    // Names
+    // All
+    public static List<string> AllItemNames()
+    {
+        return [.. AllItems().Select(x => {return x.prefabName.ToLower();})];
+    }
+    // All Joined
+    public static string JoinAllItemNames(string delimiter = "\n- ")
+    {
+        return string.Join(delimiter, AllItemNames());
+    }
+    // Filtered
+    public static List<string> FilteredItemNames(string filter)
+    {
+        return [.. FilterItems(filter).Select(x => {return x.prefabName.ToLower();})];
+    }
+    // Filtered Joined
+    public static string JoinFilteredItemNames(string filter, string delimiter = "\n- ")
+    {
+        return string.Join(delimiter, FilteredItemNames(filter));
+    }
+    // Any
+    public static string AnyItemName(string filter)
+    {
+        return AnyItem(filter)?.prefabName?.ToLower() ?? null;
     }
 
-    public static Item FindAndCloneItem(string prefabSubstr)
-    {
-        var item = GetAllItems().Find(x => x.prefabName.ToLower().Contains(prefabSubstr));
-        if (item == null) return null;
-        return item.GetClone();
-    }
 
-    public static List<string> ItemPrefabNames()
+    // Command helpers
+    public static Item ItemCloneForCommandFromArgs(string[] args)
     {
-        List<Item> items = GetAllItems();
-        return [.. items.Select(x => x.prefabName.ToLower())];
-    }
-
-    public static string ItemPrefabNames(string delimiter)
-    {
-        return string.Join(delimiter, ItemPrefabNames());
+        if (args.Length == 0)
+        {
+            Accessors.CommandConsoleAccessor.EchoToConsole($"Available items:\n- {JoinAllItemNames()}");
+            return null;
+        }
+        var clone = AnyItemClone(args[0]);
+        if (clone == null)
+        {
+            Accessors.CommandConsoleAccessor.EchoToConsole($"No such item: {args[0]}");
+            return null;
+        }
+        return clone;
     }
 }

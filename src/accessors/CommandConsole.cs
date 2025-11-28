@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 using HarmonyLib;
 
 namespace MoreCommands.Accessors;
 
 public static class CommandConsoleAccessor
 {
+    public static readonly AccessTools.FieldRef<CommandConsole, Dictionary<string, CommandConsole.Command>> commandsRef = AccessTools.FieldRefAccess<CommandConsole, Dictionary<string, CommandConsole.Command>>("commands");
+
     private static readonly Action<CommandConsole, string[]> EnableCheatsRaw =
     AccessTools.MethodDelegate<Action<CommandConsole, string[]>>(
         AccessTools.Method(typeof(CommandConsole), "EnableCheatsCommand", [typeof(string[])])

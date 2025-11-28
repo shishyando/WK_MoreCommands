@@ -4,15 +4,16 @@ using MoreCommands.Common;
 namespace MoreCommands.Patches;
 
 [HarmonyPatch(typeof(CommandConsole), "Awake")]
-public static class CommandConsole_Patcher
+public static class CommandConsole_Awake_Patcher
 {
     [HarmonyPostfix]
-    public static void AddMorePlayerCommands(CommandConsole __instance)
+    public static void RegisterMoreCommands(CommandConsole __instance)
     {
         foreach (var c in CommandRegistry.GetCommandsByTag(CommandTag.Console))
         {
             foreach (var alias in c.Aliases)
             {
+                CommandConsole.RemoveCommand(alias); // if game already registered some commands, I will override them
                 CommandConsole.AddCommand(alias, c.GetCallback(), false);
             }
         }
@@ -20,8 +21,25 @@ public static class CommandConsole_Patcher
         {
             foreach (var alias in c.Aliases)
             {
+                CommandConsole.RemoveCommand(alias); // if game already registered some commands, I will override them
                 CommandConsole.AddCommand(alias, c.GetCallback(), false);
             }
         }
+    }
+}
+
+// it's important to use RegisterCommand and not AddCommand
+// RegisterCommand is called from AddCommand when it ensures that instance is set
+// otherwise you will get an empty instance and hence NullReferenceException
+[HarmonyPatch(typeof(CommandConsole), "RegisterCommand")]
+public static class CommandConsole_RegisterCommand_Patcher
+{
+    [HarmonyPrefix]
+    public static bool DoNotOverrideExistingCommands(CommandConsole __instance, ref string command)
+    {
+        // base game registers chains commands and I don't want that behavior
+        if (command == null || CommandConsole.instance == null || __instance == null) return false;
+        var commandsDict = Accessors.CommandConsoleAccessor.commandsRef(CommandConsole.instance);
+        return !commandsDict.ContainsKey(command);
     }
 }

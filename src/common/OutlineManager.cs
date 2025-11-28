@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UIElements.Collections;
 using System;
+using MoreCommands.Common;
 
 namespace MoreCommands.Outlines;
 
 public static class OutlinesController
 {
-    private static Dictionary<GameEntity, Renderer[]> _trackedEntities = [];
+    private static Dictionary<GameEntity, string> _trackedEntitiesIds = [];
 
     private static Dictionary<string, Color> _activeOutlines = [];
     private static readonly Dictionary<string, Color> _defaultOutlines = new()
     {
         {"item_injector", new Color(0.3f, 0.9f, 0.3f)}, // light green
         {"item_blinkeye", Color.magenta},
-        {"denizen_sluggrub", Color.yellow},
+        {"denizen_sluggrub", new Color(1f, 1f, 0f, 0.8f)}, // bright yellow
         {"item_pillbottle", Color.cyan},
         {"item_food_bar", new Color(0.6f, 0.3f, 0)}, // brown
     };
@@ -48,6 +49,7 @@ public static class OutlinesController
     public static bool DisableOutlines(string entityIdLower)
     {
         Plugin.Assert(entityIdLower == entityIdLower.ToLower());
+        Plugin.Assert(IsEnabled(entityIdLower));
 
         bool removed = _activeOutlines.Remove(entityIdLower);
         if (removed) RefreshAll();
@@ -56,7 +58,7 @@ public static class OutlinesController
 
     public static void RegisterEntity(GameEntity entity)
     {
-        if (entity == null || _trackedEntities.ContainsKey(entity)) return;
+        if (entity == null || _trackedEntitiesIds.ContainsKey(entity) || !PrefabsEntities.AllGameEntityNames().Contains(entity.entityPrefabID.ToLower())) return;
 
         var renderers = entity.GetComponentsInChildren<Renderer>(true)
             .Where(r => !(r is ParticleSystemRenderer || r is TrailRenderer))
@@ -64,29 +66,38 @@ public static class OutlinesController
 
         if (renderers.Length > 0)
         {
-            _trackedEntities.Add(entity, renderers);
-            RefreshSingle(entity, renderers);
+            _trackedEntitiesIds[entity] = entity.entityPrefabID.ToLower();
+            RefreshSingle(entity);
         }
     }
 
     public static void UnregisterEntity(GameEntity entity)
     {
-        if (entity != null) _trackedEntities.Remove(entity);
+        _trackedEntitiesIds.Remove(entity);
     }
 
 
     private static void RefreshAll()
     {
-        foreach (var kvp in _trackedEntities.ToList()) 
+        var deadKeys = _trackedEntitiesIds.Keys.Where(key => key == null).ToList();
+        foreach (var key in deadKeys)
         {
-            RefreshSingle(kvp.Key, kvp.Value);
+            Plugin.Beep.LogWarning($"Refreshing outlines, dead object: {_trackedEntitiesIds[key]}");
+            _trackedEntitiesIds.Remove(key);
+        }
+        foreach (var entity in _trackedEntitiesIds.Keys)
+        {
+            RefreshSingle(entity);
         }
     }
 
-    private static void RefreshSingle(GameEntity entity, Renderer[] renderers)
+    private static void RefreshSingle(GameEntity entity)
     {
         bool shouldHighlight = _activeOutlines.TryGetValue(entity.entityPrefabID.ToLower(), out Color targetColor);
         Material outlinesMat = shouldHighlight ? OutlinesMaterialFactory.Get(targetColor) : null;
+        var renderers = entity.GetComponentsInChildren<Renderer>(true)
+            .Where(r => !(r is ParticleSystemRenderer || r is TrailRenderer))
+            .ToArray();
 
         foreach (var r in renderers)
         {
@@ -107,12 +118,6 @@ public static class OutlinesController
             if (changed) r.materials = [.. existingMats];
         }
     }
-    
-    public static void ClearAll()
-    {
-         _trackedEntities.Clear();
-         _activeOutlines.Clear();
-    }
 }
 
 public static class OutlinesMaterialFactory
@@ -130,7 +135,7 @@ public static class OutlinesMaterialFactory
         
         newMat.SetInt("unity_GUIZTestMode", (int)UnityEngine.Rendering.CompareFunction.Always);
         newMat.SetInt("_ZTest", (int)UnityEngine.Rendering.CompareFunction.Always);
-        newMat.SetInt("_ZWrite", 0);
+        newMat.SetInt("_ZWrite", 1);
         newMat.color = color;
         newMat.mainTexture = Texture2D.whiteTexture;
         newMat.renderQueue = 5000;

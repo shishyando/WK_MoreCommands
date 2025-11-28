@@ -1,7 +1,7 @@
 using System;
-using System.Drawing;
 using MoreCommands.Common;
 using MoreCommands.Outlines;
+using UnityEngine;
 
 namespace MoreCommands.Commands;
 
@@ -10,7 +10,7 @@ public sealed class WallhackCommand : CommandBase
 {
     public override string[] Aliases => ["wallhack", "wh"];
     public override CommandTag Tag => CommandTag.World;
-    public override string Description => "Add outlines to any game entity\n\twh [entity name, will be searched] (optional color like 'red', 'green' or '#RRGGBB')\nwithout params will toggle default behaviour";
+    public override string Description => "Add outlines to any game entity\n wh [entity] (optional color like 'red', 'green' or '#RRGGBB')\nentity is searched by substring\nwithout params will toggle default behaviour";
     public override bool CheatsOnly => true;
 
     protected override Action<string[]> GetLogicCallback()
@@ -38,15 +38,16 @@ public sealed class WallhackCommand : CommandBase
                 return;
             }
 
-            UnityEngine.Color c = UnityEngine.Random.ColorHSV();
-            if (args.Length == 2 && !UnityEngine.ColorUtility.TryParseHtmlString(args[1], out c))
+            Color c = UnityEngine.Random.ColorHSV();
+            if (args.Length == 2 && !ColorUtility.TryParseHtmlString(args[1], out c))
             {
                 Accessors.CommandConsoleAccessor.EchoToConsole($"Failed to parse color {args[1]}");
                 return;
             }
 
             c = OutlinesController.EnableOutlines(entityIdLower, c);
-            Accessors.CommandConsoleAccessor.EchoToConsole($"Enabled outlines for <color={c}>{entityIdLower}</color>, color = <color={c}>{c}</color>");
+            string cstr = $"#{ColorUtility.ToHtmlStringRGB(c)}";
+            Accessors.CommandConsoleAccessor.EchoToConsole($"Enabled outlines for <color={cstr}>{entityIdLower}</color>, color: <color={cstr}>{cstr}</color>");
         };
     }
 }

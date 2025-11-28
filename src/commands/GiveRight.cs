@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using HarmonyLib;
 using MoreCommands.Common;
 
 namespace MoreCommands.Commands;
@@ -11,25 +8,15 @@ public sealed class GiveRightCommand : CommandBase
 {
     public override string[] Aliases => ["right"];
     public override CommandTag Tag => CommandTag.Player;
-    public override string Description => "give item to right hand or inventory";
+    public override string Description => "give item to right hand or inventory by its id with substring search";
     public override bool CheatsOnly => true;
 
     protected override Action<string[]> GetLogicCallback()
     {
         return args =>
         {
-            if (args.Length == 0)
-            {
-                Accessors.CommandConsoleAccessor.EchoToConsole($"Available items:\n{PrefabsItems.ItemPrefabNames("\n")}");
-                return;
-            }
-            var item = PrefabsItems.FindAndCloneItem(args[0]);
-            if (item == null)
-            {
-                Accessors.CommandConsoleAccessor.EchoToConsole($"No such item: {args[0]}");
-                return;
-            }
-            var clone = item.GetClone();
+            Item clone = PrefabsItems.ItemCloneForCommandFromArgs(args);
+            if (clone == null) return;
             clone.bagRotation = new UnityEngine.Quaternion(1, 2, 3, 4);
             Inventory.instance.AddItemToHand(clone, 1);
         };

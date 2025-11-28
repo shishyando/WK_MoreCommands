@@ -1,3 +1,22 @@
+# Version 0.10.0 Wallhack update (29 nov 2025)
+
+### Added:
+* `wh`, `wallhack` allows you to enable colorful outlines for any entity (pickupables, denizens, planks, etc.) with substring search
+* `listentities` replaces in-game `listentities` with more entities and substring search
+* `spawn`, `spawnentity` uses an extended list of spawnable entities with substring search
+* `listitems` provides an extended list of items with substring search (used with `give`, `left`, `right` commands)
+
+### Changed:
+* a lot of implementation stuff
+* `speedy` became `speedyperks` to make it clear that it gives the player perks
+
+### Todo:
+* Replace in-game `help` and other default commands
+* Better locations for `tp` command
+* Chainable commands
+* Some configs (persistent `alias` command? editing default `wh` preset?)
+* Support ColorfulTimers mod in MoreCommands (commands to change how timer looks like)
+
 # Version 0.9.0 noclipspeed update (26 oct 2025)
 
 ### Added:

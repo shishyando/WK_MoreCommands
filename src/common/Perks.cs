@@ -11,11 +11,7 @@ public static class PerkChanger
         if (old != null)
         {
             int toAdd = old.stackMax - old.stackAmount;
-            // MoreCommandsPlugin.Beep.LogInfo($"[OLD] perk={old.GetTitle()}: {old.stackAmount}/{old.stackMax}, adding={toAdd}");
-            if (toAdd > 0)
-            {
-                old.AddStack(toAdd);
-            }
+            if (toAdd > 0) old.AddStack(toAdd);
             return;
         }
 
@@ -24,11 +20,7 @@ public static class PerkChanger
         {
             Perk perk = UnityEngine.Object.Instantiate(template);
             int toAdd = perk.stackMax;
-            // MoreCommandsPlugin.Beep.LogInfo($"(NEW) perk={perk.GetTitle()}: {perk.stackAmount}/{perk.stackMax}, adding={toAdd}");
-            if (toAdd > 0)
-            {
-                player.AddPerk(perk, toAdd);
-            }
+            if (toAdd > 0) player.AddPerk(perk, toAdd);
             return;
         }
 

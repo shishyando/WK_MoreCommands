@@ -18,7 +18,7 @@ public static class GameEntity_OnDestroy_Patcher
 {
     static void Prefix(GameEntity __instance)
     {
-        Outlines.OutlinesController.RegisterEntity(__instance);
+        Outlines.OutlinesController.UnregisterEntity(__instance);
     }
 
 }

@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using HarmonyLib;
 using MoreCommands.Common;
 
 namespace MoreCommands.Commands;
@@ -18,7 +15,7 @@ public sealed class BanhammerCommand : CommandBase
     {
         return args =>
         {
-            Inventory.instance.AddItemToHand(PrefabsItems.GetItemByPrefabName("item_banhammer").GetClone(), 0);
+            Inventory.instance.AddItemToHand(PrefabsItems.AnyItemClone("item_banhammer"), 0);
         };
     }
 }

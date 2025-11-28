@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using MoreCommands.Common;
 
 namespace MoreCommands.Commands;
