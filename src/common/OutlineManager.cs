@@ -29,6 +29,12 @@ public static class OutlinesController
         return _activeOutlines.Count > 0;
     }
 
+    public static void ClearAll()
+    {
+        _activeOutlines.Clear();
+        _trackedEntitiesIds.Clear();
+    }
+
     public static bool IsEnabled(string entityIdLower)
     {
         Plugin.Assert(entityIdLower == entityIdLower.ToLower());

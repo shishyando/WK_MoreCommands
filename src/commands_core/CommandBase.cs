@@ -11,6 +11,7 @@ public interface ICommand {
     bool CheatsOnly { get; }
     Action<string[]> GetCallback(bool withSuffix = true);
     Action<string[]> GetLogicCallback();
+    void OnExit();
 }
 
 public interface ITogglableCommand : ICommand {
@@ -25,6 +26,7 @@ public abstract class CommandBase : ICommand {
 
     public abstract bool CheatsOnly { get; }
     public abstract Action<string[]> GetLogicCallback();
+    public virtual void OnExit() {}
 
     public void EnsureCheats(string[] args)
     {
@@ -78,5 +80,10 @@ public abstract class TogglableCommandBase : CommandBase, ITogglableCommand {
             return !enabled;
         }
         return result;
+    }
+
+    public override void OnExit()
+    {
+        GetCallback(withSuffix: false)(["false"]);
     }
 }

@@ -49,4 +49,9 @@ public sealed class WallhackCommand : CommandBase
             Accessors.CommandConsoleAccessor.EchoToConsole($"Enabled outlines for {Colors.Tagged(entityIdLower, c)}, color: {Colors.Tagged(Colors.Str(c), c)}");
         };
     }
+
+    public override void OnExit()
+    {
+        OutlinesController.ClearAll();
+    }
 }

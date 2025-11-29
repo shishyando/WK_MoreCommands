@@ -32,4 +32,9 @@ public sealed class NoclipSpeed : CommandBase
             }
         };
     }
+
+    public override void OnExit()
+    {
+        ENT_Player_Movement_Patcher.NoclipSpeedMultiplier = 1f;
+    }
 }

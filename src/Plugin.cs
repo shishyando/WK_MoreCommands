@@ -26,7 +26,7 @@ public class Plugin : BaseUnityPlugin
     public static void OnSceneUnloaded(Scene s) {
         if (s.name == "Game-Main")
         {
-            CommandRegistry.DisableAllTogglableCommands();
+            CommandRegistry.OnExit();
         }
     }
 

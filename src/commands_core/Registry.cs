@@ -64,14 +64,11 @@ public static partial class CommandRegistry
         return RegisteredCommands.FirstOrDefault(c => c.GetType() == typeof(T))?.GetLogicCallback() ?? (args => { Plugin.Beep.LogWarning($"Command {typeof(T)} not found"); });
     }
 
-    public static void DisableAllTogglableCommands()
+    public static void OnExit()
     {
         foreach (var command in RegisteredCommands)
         {
-            if (command is ITogglableCommand togglableCommand)
-            {
-                togglableCommand.Enabled = false;
-            }
+            command.OnExit();
         }
     }
 }

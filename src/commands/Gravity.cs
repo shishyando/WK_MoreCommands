@@ -32,4 +32,10 @@ public sealed class GravityCommand : CommandBase
             }
         };
     }
+
+    public override void OnExit()
+    {
+        ENT_Player player = ENT_Player.playerObject;
+        player.SetGravityMult(1f);
+    }
 }

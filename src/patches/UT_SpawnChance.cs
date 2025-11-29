@@ -1,5 +1,5 @@
+using System.Collections.Generic;
 using HarmonyLib;
-using UnityEngine;
 
 namespace MoreCommands.Patches;
 
@@ -8,8 +8,14 @@ public static class UT_SpawnChance_Start_Patcher
 {
     public static bool AlwaysSpawn = false;
 
+    public static HashSet<string> ExcludeFromAlwaySpawn = [
+        "Level_Secret_Entrance_Blocked",
+        "Secret area spawn",
+    ];
+
     public static bool Prefix()
     {
+
         return !AlwaysSpawn;
     }
 }
