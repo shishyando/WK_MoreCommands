@@ -1,9 +1,10 @@
-# Version 0.10.1 Wallhack update (29 nov 2025)
+# Version 0.10.2 Wallhack update (29 nov 2025)
 
 Showcase: https://www.youtube.com/watch?v=KOxQGqisMBs
 
 ### Added:
 * `wh`, `wallhack` allows you to enable colorful outlines for any entity (pickupables, denizens, planks, etc.) with substring search
+* `alwaysspawn` guarantees spawns (items, handholds, supply crates, etc.). Does not spawn items which already failed random check.
 * `listentities` replaces in-game `listentities` with more entities and substring search
 * `spawn`, `spawnentity` uses an extended list of spawnable entities with substring search
 * `listitems` provides an extended list of items with substring search (used with `give`, `left`, `right` commands)

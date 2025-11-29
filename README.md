@@ -26,6 +26,7 @@ Console commands for White Knuckle.
 | `spawn`, `spawnentity`             | Spawn entity by its name id with substring search                                                                                                                                | Oneshot   | `+`            |
 | `tp`                               | teleport to `arg`, no `arg` = list locations                                                                                                                                     | Oneshot   | `+`            |
 | `wallhack`, `wh`                   | Add outlines to any game entity,  `wh` [entity] (optional color like 'red', 'green' or '#RRGGBB'), entity is searched by substring, without params will toggle default behaviour | Oneshot   | `+`            |
+| `alwaysspawn`                      | Guarantee spawns (items, handholds, supply crates, etc.). Does not spawn items which already failed random check                                                                 | Togglable | `+`            |
 
 Togglable commands can be run with arguments `true`/`false`
 
