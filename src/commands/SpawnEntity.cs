@@ -13,7 +13,7 @@ public sealed class SpawnEntityCommand : CommandBase
     public override string Description => "Spawn entity by its prefab id with substring search";
     public override bool CheatsOnly => true;
 
-    protected override Action<string[]> GetLogicCallback()
+    public override Action<string[]> GetLogicCallback()
     {
         return args =>
         {
@@ -34,7 +34,6 @@ public sealed class SpawnEntityCommand : CommandBase
                         Bounds bounds = component.bounds;
                         Vector3 b = raycastHit.normal * bounds.extents.magnitude;
                         gameEntity.transform.position += b;
-                        return;
                     }
                 }
             }
@@ -42,6 +41,7 @@ public sealed class SpawnEntityCommand : CommandBase
             {
                 UnityEngine.Object.Instantiate(e.gameObject, position, rotation);
             }
+            Accessors.CommandConsoleAccessor.EchoToConsole($"Spawned entity: {Colors.Highlighted(e.entityPrefabID.ToLower())}");
         };
     }
 

@@ -4,16 +4,16 @@ using MoreCommands.Common;
 namespace MoreCommands.Commands;
 
 
-public sealed class FlashCommand : CommandBase
+public sealed class FlashCommand : TogglableCommandBase
 {
     public override string[] Aliases => ["flash"];
     public override CommandTag Tag => CommandTag.Player;
     public override string Description => "freerun + buff";
     public override bool CheatsOnly => true;
 
-    protected override Action<string[]> GetLogicCallback()
+    public override Action<string[]> GetLogicCallback()
     {
-        return CommandRegistry.GetCallback<FreerunCommand>()
-            + CommandRegistry.GetCallback<BuffCommand>();
+        return CommandRegistry.GetCallback<FreerunCommand>(withSuffix: false)
+            + CommandRegistry.GetCallback<BuffCommand>(withSuffix: false);
     }
 }

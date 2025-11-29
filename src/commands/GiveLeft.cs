@@ -11,7 +11,7 @@ public sealed class GiveLeftCommand : CommandBase
     public override string Description => "give item to left hand or inventory by its id with substring search";
     public override bool CheatsOnly => true;
 
-    protected override Action<string[]> GetLogicCallback()
+    public override Action<string[]> GetLogicCallback()
     {
         return args =>
         {

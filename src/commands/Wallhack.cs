@@ -13,7 +13,7 @@ public sealed class WallhackCommand : CommandBase
     public override string Description => "Add outlines to any game entity\n wh [entity] (optional color like 'red', 'green' or '#RRGGBB')\nentity is searched by substring\nwithout params will toggle default behaviour";
     public override bool CheatsOnly => true;
 
-    protected override Action<string[]> GetLogicCallback()
+    public override Action<string[]> GetLogicCallback()
     {
         return args =>
         {
@@ -46,8 +46,7 @@ public sealed class WallhackCommand : CommandBase
             }
 
             c = OutlinesController.EnableOutlines(entityIdLower, c);
-            string cstr = $"#{ColorUtility.ToHtmlStringRGB(c)}";
-            Accessors.CommandConsoleAccessor.EchoToConsole($"Enabled outlines for <color={cstr}>{entityIdLower}</color>, color: <color={cstr}>{cstr}</color>");
+            Accessors.CommandConsoleAccessor.EchoToConsole($"Enabled outlines for {Colors.Tagged(entityIdLower, c)}, color: {Colors.Tagged(Colors.Str(c), c)}");
         };
     }
 }

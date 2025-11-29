@@ -90,6 +90,7 @@ public static class PrefabsItems
             Accessors.CommandConsoleAccessor.EchoToConsole($"No such item: {args[0]}");
             return null;
         }
+        Accessors.CommandConsoleAccessor.EchoToConsole($"Given item: {Colors.Highlighted(clone.prefabName.ToLower())}");
         return clone;
     }
 }

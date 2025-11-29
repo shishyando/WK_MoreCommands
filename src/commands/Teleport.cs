@@ -27,7 +27,7 @@ public sealed class TeleportCommand : CommandBase
     };
 
 
-    protected override Action<string[]> GetLogicCallback()
+    public override Action<string[]> GetLogicCallback()
     {
         return args =>
         {
@@ -55,6 +55,7 @@ public sealed class TeleportCommand : CommandBase
                 Accessors.CommandConsoleAccessor.EchoToConsole($"Ambiguous place to tp: {args[0]} maps to {string.Join(", ", destinations)}\n teleporting to first");
             }
             WorldLoader.instance.TeleportPlayerToTargetLevel([destinations[0]]);
+            Accessors.CommandConsoleAccessor.EchoToConsole($"Teleported to {Colors.Highlighted(destinations[0])}");
         };
     }
 }

@@ -11,7 +11,7 @@ public sealed class BetterListPerksCommand : CommandBase
     public override string Description => "List perks info, filtered by `arg`";
     public override bool CheatsOnly => false;
 
-    protected override Action<string[]> GetLogicCallback()
+    public override Action<string[]> GetLogicCallback()
     {
         return args =>
         {
@@ -19,7 +19,9 @@ public sealed class BetterListPerksCommand : CommandBase
             {
                 if (args.Length == 0 || Helpers.Substr(perk.name, args[0]) || Helpers.Substr(perk.description, args[0]) || Helpers.Substr(perk.id, args[0]))
                 {
-                    Accessors.CommandConsoleAccessor.EchoToConsole($"- {perk.GetTitle()} (<color=grey>{perk.id}</color>)\n{perk.GetDescription(includeFlavor: false)}</color></color></color>\n"); // in case some tags were left unclosed
+                    string perkDescription = perk.GetDescription(includeFlavor: false);
+                    string info = $"- {perk.GetTitle()} ({Colors.Highlighted(perk.id)})\n{perkDescription}</color></color></color>\n"; // in case some tags were left unclosed by game
+                    Accessors.CommandConsoleAccessor.EchoToConsole(info);
                 }
             }
         };

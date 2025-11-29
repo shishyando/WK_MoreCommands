@@ -11,11 +11,12 @@ public sealed class BanhammerCommand : CommandBase
     public override string Description => "give banhammer to player";
     public override bool CheatsOnly => true;
 
-    protected override Action<string[]> GetLogicCallback()
+    public override Action<string[]> GetLogicCallback()
     {
         return args =>
         {
             Inventory.instance.AddItemToHand(PrefabsItems.AnyItemClone("item_banhammer"), 0);
+            Accessors.CommandConsoleAccessor.EchoToConsole($"{Colors.Tagged("banhammer", Colors.REDDISH)} given");
         };
     }
 }

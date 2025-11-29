@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace MoreCommands.Common;
 
@@ -8,7 +9,8 @@ public interface ICommand {
     CommandTag Tag { get; }
     string Description { get; }
     bool CheatsOnly { get; }
-    Action<string[]> GetCallback();
+    Action<string[]> GetCallback(bool withSuffix = true);
+    Action<string[]> GetLogicCallback();
 }
 
 public interface ITogglableCommand : ICommand {
@@ -22,7 +24,7 @@ public abstract class CommandBase : ICommand {
     public abstract string Description { get; }
 
     public abstract bool CheatsOnly { get; }
-    protected abstract Action<string[]> GetLogicCallback();
+    public abstract Action<string[]> GetLogicCallback();
 
     public void EnsureCheats(string[] args)
     {
@@ -31,27 +33,32 @@ public abstract class CommandBase : ICommand {
 
     public void PrintSuffix(string[] args)
     {
-        Accessors.CommandConsoleAccessor.EchoToConsole($"<color=grey>---------------------</color>");
+        Accessors.CommandConsoleAccessor.EchoToConsole(Colors.COMMAND_SEP);
     }
 
-    public virtual Action<string[]> GetCallback()
+    public virtual Action<string[]> GetCallback(bool withSuffix = true)
     {
-        return EnsureCheats + GetLogicCallback() + PrintSuffix;
+        return EnsureCheats + GetLogicCallback() + (withSuffix ? PrintSuffix : args => {});
     }
 }
 
 public abstract class TogglableCommandBase : CommandBase, ITogglableCommand {
     public bool Enabled { get; set; }
-    
+    public string EnabledStr => Enabled ? "enabled" : "disabled";
 
     public void UpdateEnabled(string[] args)
     {
         Enabled = ParseEnabled(Enabled, args);
     }
 
-    public sealed override Action<string[]> GetCallback()
+    public void PrintEnabled(string[] args)
     {
-        return UpdateEnabled + (Action<string[]>)EnsureCheats + GetLogicCallback();
+        Accessors.CommandConsoleAccessor.EchoToConsole($"{Colors.Highlighted(Aliases.First())} {EnabledStr}");
+    }
+
+    public sealed override Action<string[]> GetCallback(bool withSuffix = true)
+    {
+        return UpdateEnabled + (Action<string[]>)EnsureCheats + GetLogicCallback() + PrintEnabled + (withSuffix ? PrintSuffix : args => {});
     }
 
     public static string[] WhenEnabled(bool enabled)

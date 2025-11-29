@@ -13,7 +13,7 @@ public sealed class GrubbyCommand : TogglableCommandBase
 
     private readonly string BuffId = $"{MyPluginInfo.PLUGIN_GUID}.grubbyCommand";
 
-    protected override Action<string[]> GetLogicCallback()
+    public override Action<string[]> GetLogicCallback()
     {
         return args =>
         {

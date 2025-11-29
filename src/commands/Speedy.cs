@@ -32,7 +32,7 @@ public sealed class SpeedyPerksCommand : CommandBase
         "Perk_Rho_Blessing_Overwhelm",
     ];
 
-    protected override Action<string[]> GetLogicCallback()
+    public override Action<string[]> GetLogicCallback()
     {
         return args =>
         {
@@ -40,6 +40,7 @@ public sealed class SpeedyPerksCommand : CommandBase
             {
                 PerkChanger.MaxOutPerk(perkId);
             }
+            Accessors.CommandConsoleAccessor.EchoToConsole($"Movement perks given");
         };
     }
 

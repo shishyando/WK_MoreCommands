@@ -11,7 +11,7 @@ public sealed class ExploreCommand : TogglableCommandBase
     public override string Description => "freerun + noclip";
     public override bool CheatsOnly => true;
 
-    protected override Action<string[]> GetLogicCallback()
+    public override Action<string[]> GetLogicCallback()
     {
         return CommandRegistry.GetCallback<FreerunCommand>()
             + new Action<string[]>(args =>

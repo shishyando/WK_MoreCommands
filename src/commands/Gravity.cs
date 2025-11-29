@@ -12,17 +12,19 @@ public sealed class GravityCommand : CommandBase
     public override string Description => "set player gravity multiplier (1 is default)";
     public override bool CheatsOnly => true;
 
-    protected override Action<string[]> GetLogicCallback()
+    public override Action<string[]> GetLogicCallback()
     {
         return args =>
         {
             ENT_Player player = ENT_Player.playerObject;
             if (args.Length == 0) {
                 player.SetGravityMult(1f);
+                Accessors.CommandConsoleAccessor.EchoToConsole($"Player gravity set to 1.0");
             }
             else if (float.TryParse(args[0], out float g))
             {
                 player.SetGravityMult(g);
+                Accessors.CommandConsoleAccessor.EchoToConsole($"Player gravity set to {g:F1}");
             }
             else
             {

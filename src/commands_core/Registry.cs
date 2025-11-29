@@ -54,9 +54,14 @@ public static partial class CommandRegistry
         return RegisteredCommands.FirstOrDefault(c => c.GetType() == typeof(T));
     }
 
-    public static Action<string[]> GetCallback<T>() where T : ICommand
+    public static Action<string[]> GetCallback<T>(bool withSuffix = true) where T : ICommand
     {
-        return RegisteredCommands.FirstOrDefault(c => c.GetType() == typeof(T))?.GetCallback() ?? (args => { Plugin.Beep.LogWarning($"Command {typeof(T)} not found"); });
+        return RegisteredCommands.FirstOrDefault(c => c.GetType() == typeof(T))?.GetCallback(withSuffix) ?? (args => { Plugin.Beep.LogWarning($"Command {typeof(T)} not found"); });
+    }
+
+    public static Action<string[]> GetLogicCallback<T>() where T : ICommand
+    {
+        return RegisteredCommands.FirstOrDefault(c => c.GetType() == typeof(T))?.GetLogicCallback() ?? (args => { Plugin.Beep.LogWarning($"Command {typeof(T)} not found"); });
     }
 
     public static void DisableAllTogglableCommands()

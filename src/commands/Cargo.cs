@@ -11,11 +11,12 @@ public sealed class CargoCommand : CommandBase
     public override string Description => "max backstrength";
     public override bool CheatsOnly => true;
 
-    protected override Action<string[]> GetLogicCallback()
+    public override Action<string[]> GetLogicCallback()
     {
         return args =>
         {
             PerkChanger.MaxOutPerk("Perk_BackStrengtheners");
+            Accessors.CommandConsoleAccessor.EchoToConsole($"Max backstrength perks given");
         };
     }
 }

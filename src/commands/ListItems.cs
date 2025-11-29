@@ -12,7 +12,7 @@ public sealed class ListItemsCommand : CommandBase
     public override string Description => "List items, filtered by `arg`";
     public override bool CheatsOnly => false;
 
-    protected override Action<string[]> GetLogicCallback()
+    public override Action<string[]> GetLogicCallback()
     {
         return args =>
         {

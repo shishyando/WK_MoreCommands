@@ -13,7 +13,7 @@ public sealed class BuffCommand : TogglableCommandBase
 
     private readonly string BuffId = $"{MyPluginInfo.PLUGIN_GUID}.buffCommand";
 
-    protected override Action<string[]> GetLogicCallback()
+    public override Action<string[]> GetLogicCallback()
     {
         return args =>
         {

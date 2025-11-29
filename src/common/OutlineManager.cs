@@ -14,11 +14,11 @@ public static class OutlinesController
     private static Dictionary<string, Color> _activeOutlines = [];
     private static readonly Dictionary<string, Color> _defaultOutlines = new()
     {
-        {"item_injector", new Color(0.3f, 0.9f, 0.3f)}, // light green
-        {"item_blinkeye", Color.magenta},
-        {"denizen_sluggrub", new Color(1f, 1f, 0f, 0.8f)}, // bright yellow
-        {"item_pillbottle", Color.cyan},
-        {"item_food_bar", new Color(0.6f, 0.3f, 0)}, // brown
+        {"item_injector", Colors.LIGHT_GREEN},
+        {"item_blinkeye", Colors.MAGENTA},
+        {"denizen_sluggrub", Colors.BRIGHT_YELLOW},
+        {"item_pillbottle", Colors.CYAN},
+        {"item_food_bar", Colors.BROWN},
     };
 
     public static bool ToggleDefault()
@@ -129,7 +129,6 @@ public static class OutlinesMaterialFactory
     {
         if (_cache.TryGetValue(color, out var mat) && mat != null) return mat;
 
-        // Имя шейдера используется как "тег" для удаления в RefreshSingle
         var shader = Shader.Find(SHADER_NAME);
         var newMat = new Material(shader);
         

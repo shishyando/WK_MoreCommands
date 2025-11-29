@@ -11,7 +11,7 @@ public sealed class FreerunCommand : TogglableCommandBase
     public override string Description => "godmode + deathgoo-stop + fullbright + infinitestamina + notarget";
     public override bool CheatsOnly => true;
 
-    protected override Action<string[]> GetLogicCallback()
+    public override Action<string[]> GetLogicCallback()
     {
         return args =>
         {

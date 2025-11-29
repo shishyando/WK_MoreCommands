@@ -1,4 +1,4 @@
-# Version 0.10.0 Wallhack update (29 nov 2025)
+# Version 0.10.1 Wallhack update (29 nov 2025)
 
 Showcase: https://www.youtube.com/watch?v=KOxQGqisMBs
 
@@ -7,6 +7,7 @@ Showcase: https://www.youtube.com/watch?v=KOxQGqisMBs
 * `listentities` replaces in-game `listentities` with more entities and substring search
 * `spawn`, `spawnentity` uses an extended list of spawnable entities with substring search
 * `listitems` provides an extended list of items with substring search (used with `give`, `left`, `right` commands)
+* More colors!
 
 ### Changed:
 * a lot of implementation stuff
