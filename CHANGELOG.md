@@ -1,4 +1,4 @@
-# Version 0.11.0 Load levels update (30 nov 2025)
+# Version 0.11.1 Load levels update (30 nov 2025)
 
 ### Added:
 * `listlevels` - replaces in-game command with more levels which can be used for loading. List levels, filtered by `arg`.
@@ -14,6 +14,7 @@
 * `man` has different colors for commands and sorts by color + alias
 * a lot of implementation stuff again
 * secret rooms are now always open while `alwaysspawn` is active
+* fixed vanilla game bug which crashes your console on non-ascii input & requires run restart
 
 # Version 0.10.3 Wallhack update (29 nov 2025)
 

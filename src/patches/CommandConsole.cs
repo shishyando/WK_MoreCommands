@@ -1,5 +1,6 @@
 using HarmonyLib;
 using MoreCommands.Common;
+using UnityEngine;
 
 namespace MoreCommands.Patches;
 
@@ -24,6 +25,26 @@ public static class CommandConsole_Awake_Patcher
                 CommandConsole.RemoveCommand(alias); // if game already registered some commands, I will override them
                 CommandConsole.AddCommand(alias, c.GetCallback(), false);
             }
+        }
+    }
+
+    [HarmonyPostfix]
+    public static void FixVanillaGameBug(CommandConsole __instance) // fix for non-ascii input crashing console & requiring restart
+    {
+        var inputFields = __instance.gameObject.GetComponentsInChildren<TMPro.TMP_InputField>(true);
+        foreach (TMPro.TMP_InputField input in inputFields)
+        {
+            input.onValidateInput = ValidateAscii;
+        }
+
+        static char ValidateAscii(string text, int charIndex, char addedChar)
+        {
+            if (addedChar <= 127)
+            {
+                return addedChar;
+            }
+
+            return '\0';
         }
     }
 }
