@@ -15,7 +15,7 @@ public sealed class BanhammerCommand : CommandBase
     {
         return args =>
         {
-            Inventory.instance.AddItemToHand(PrefabsItems.AnyItemClone("item_banhammer"), 0);
+            Inventory.instance.AddItemToHand(Prefabs.Items().Filter("item_banhammer").Any(), 0);
             Accessors.CommandConsoleAccessor.EchoToConsole($"{Colors.Tagged("banhammer", Colors.REDDISH)} given");
         };
     }

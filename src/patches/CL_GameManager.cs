@@ -19,20 +19,12 @@ public static class CL_GameManager_Awake_Patcher
                                             .Concat(baseAssetDatabase.itemPrefabs)
                                             .Where(x => x != null && x.name != null)
                                             .Distinct();
-        Dictionary<string, Item> items = [];
         Dictionary<string, GameEntity> entities = [];
         foreach (GameObject obj in joinedCollections)
         {
             GameEntity gameEntity = obj.GetComponentInChildren<GameEntity>() ?? obj.AddComponent<GameEntity>();
             entities.TryAdd(obj.name.ToLower(), gameEntity);
-            
-            Item_Object itemObject = obj.GetComponentInChildren<Item_Object>();
-            
-            if (itemObject != null) {
-                items.TryAdd(itemObject.itemData.prefabName, itemObject.itemData);
-            }
         }
         __instance.gameEntityPrefabs = [.. entities.Values];
-        PrefabsItems.Initialize(items.Values.ToList());
     }
 }

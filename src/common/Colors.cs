@@ -4,11 +4,12 @@ using UnityEngine;
 
 public static class Colors
 {
-    public static Color HIGHLIGHT = new(0.25f, 0.45f, 0.5f);
+    public static Color HIGHLIGHT = new(0.25f, 0.45f, 0.5f); // dark cyan
 
-    public static Color C_PLAYER = new(0.68f, 0.95f, 0.96f);
-    public static Color C_WORLD = new(0.73f, 0.51f, 0.21f);
-    public static Color C_CONSOLE = new(0.59f, 0.23f, 0.82f);
+    public static Color C_PLAYER = new(0.68f, 0.95f, 0.96f); // cyanish
+    public static Color C_WORLD = new(0.929f,0.855f,0.714f); // light brownish
+    public static Color C_CONSOLE = new(0.898f,0.796f,0.949f); // Light grayish violet
+    public static Color C_DESCRIPTION = new(0.792f,0.792f,0.792f); // light grey
 
     public static Color WHITE = Color.white;
     public static Color MAGENTA = Color.magenta;
@@ -47,7 +48,8 @@ public static class Colors
         };
         string prefix = c.CheatsOnly ? CHEAT_SIGN : "-";
 
-        return Tagged($"{prefix} {c.Aliases.Join()}:\n{c.Description}", color);
+        return $"{prefix} {Tagged(c.Aliases.Join(), color)}:\n{Tagged(c.Description, C_DESCRIPTION)}";
+        // return Tagged($"{prefix} {c.Aliases.Join()}:\n{c.Description}", color);
     }
 
 }

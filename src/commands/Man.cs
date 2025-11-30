@@ -16,7 +16,7 @@ public sealed class ManCommand : CommandBase
     {
         return args =>
         {
-            foreach (ICommand c in CommandRegistry.GetAllCommands())
+            foreach (ICommand c in CommandRegistry.GetAllCommands().OrderBy(x => (x.Tag, x.Aliases[0])))
             {
                 if (args.Length == 0 || c.Aliases.Contains(args[0]))
                 {

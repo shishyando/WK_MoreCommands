@@ -16,7 +16,7 @@ public sealed class ListEntitiesCommand : CommandBase
     {
         return args =>
         {
-            Accessors.CommandConsoleAccessor.EchoToConsole($"- {PrefabsEntities.JoinFilteredGameEntityNames(args.FirstOrDefault() ?? "")}");
+            Accessors.CommandConsoleAccessor.EchoToConsole($"- {Prefabs.Entities().Filter(args.FirstOrDefault() ?? "").Join()}");
         };
     }
 

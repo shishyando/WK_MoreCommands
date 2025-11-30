@@ -1,3 +1,20 @@
+# Version 0.11.0 Load levels update (30 nov 2025)
+
+### Added:
+* `listlevels` - replaces in-game command with more levels which can be used for loading. List levels, filtered by `arg`.
+* `listregions` - List regions, filtered by `arg`.
+* `listsubregions` - List subregions, filtered by `arg`.
+* `loadlevels` - Load levels by its names with substring search.
+* `loadrandomlevels` - Load completely random levels. Recommended commands: `godmode`, `deathgoo-stop`, `deathgoo-height NaN`. Have fun.
+* `loadregions` - Load some regions' levels by region names, filtered by `arg`. Each region loads like in a normal run, not shuffled.
+* `loadsubregions` - Load all subregions' levels by subregion names, filtered by `arg`.
+
+### Changed:
+* `listperks` now replaces in-game command (`lp` alias also works as before)
+* `man` has different colors for commands and sorts by color + alias
+* a lot of implementation stuff again
+* secret rooms are now always open while `alwaysspawn` is active
+
 # Version 0.10.3 Wallhack update (29 nov 2025)
 
 Showcase: https://www.youtube.com/watch?v=KOxQGqisMBs

@@ -64,7 +64,7 @@ public static class OutlinesController
 
     public static void RegisterEntity(GameEntity entity)
     {
-        if (entity == null || _trackedEntitiesIds.ContainsKey(entity) || !PrefabsEntities.AllGameEntityNames().Contains(entity.entityPrefabID.ToLower())) return;
+        if (entity == null || _trackedEntitiesIds.ContainsKey(entity) || !Prefabs.Entities().Names().Contains(entity.entityPrefabID.ToLower())) return;
 
         var renderers = entity.GetComponentsInChildren<Renderer>(true)
             .Where(r => !(r is ParticleSystemRenderer || r is TrailRenderer))

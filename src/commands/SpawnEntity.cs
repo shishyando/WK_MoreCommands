@@ -16,7 +16,7 @@ public sealed class SpawnEntityCommand : CommandBase
     {
         return args =>
         {
-            GameEntity e = PrefabsEntities.GameEntityForCommandFromArgs(args);
+            GameEntity e = Prefabs.EntityProvider().FromCommand(args);
             if (e == null) return;
             Vector3 position = Camera.main.transform.position + Camera.main.transform.forward;
             Quaternion rotation = Quaternion.identity;
@@ -40,7 +40,6 @@ public sealed class SpawnEntityCommand : CommandBase
             {
                 UnityEngine.Object.Instantiate(e.gameObject, position, rotation);
             }
-            Accessors.CommandConsoleAccessor.EchoToConsole($"Spawned entity: {Colors.Highlighted(e.entityPrefabID.ToLower())}");
         };
     }
 

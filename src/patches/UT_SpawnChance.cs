@@ -8,15 +8,18 @@ public static class UT_SpawnChance_Start_Patcher
 {
     public static bool AlwaysSpawn = false;
 
-    public static HashSet<string> ExcludeFromAlwaySpawn = [
+    public static HashSet<string> ExcludeFromAlwaysSpawn = [
         "Level_Secret_Entrance_Blocked",
         "Secret area spawn",
     ];
 
-    public static bool Prefix()
+    public static bool Prefix(UT_SpawnChance __instance)
     {
-
-        return !AlwaysSpawn;
+        if (AlwaysSpawn) {
+            __instance.gameObject.SetActive(!ExcludeFromAlwaysSpawn.Contains(__instance.name));
+            return false;
+        }
+        return true;
     }
 }
 

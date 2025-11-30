@@ -24,7 +24,7 @@ public sealed class WallhackCommand : CommandBase
                 else Accessors.CommandConsoleAccessor.EchoToConsole($"Switching wallhacks off");
                 return;
             }
-            string entityIdLower = PrefabsEntities.AnyGameEntityName(args[0]);
+            string entityIdLower = Prefabs.Entities().Filter(args[0]).AnyName();
             if (entityIdLower == null)
             {
                 Accessors.CommandConsoleAccessor.EchoToConsole($"No such entity found: {args[0]}");

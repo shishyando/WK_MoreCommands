@@ -15,7 +15,7 @@ class CommandData:
     cheats_only: bool
 
 
-all_aliases = ['godmode', 'deathgoo-stop', 'fullbright', 'infinitestamina', 'notarget', 'noclip']
+all_aliases = ['godmode', 'deathgoo-stop', 'fullbright', 'infinitestamina', 'notarget', 'noclip', 'deathgoo-heiht']
 
 def extract_commands(commands_dir):
     global all_aliases
