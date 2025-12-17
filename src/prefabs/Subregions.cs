@@ -12,7 +12,7 @@ public class Subregions : HandleProvider<M_Subregion>
     public void Initialize()
     {
         _subregions = CL_AssetManager.GetFullCombinedAssetDatabase().subRegionAssets
-            .Where(x => x != null)
+            .Where(x => x != null && (x.levels?.Count ?? 0) > 0)
             .Distinct()
             .ToList()
         ;

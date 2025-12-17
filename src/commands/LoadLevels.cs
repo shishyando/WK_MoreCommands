@@ -17,7 +17,8 @@ public sealed class LoadLevelsCommand : CommandBase
         return args =>
         {
             var levels = Prefabs.LevelProvider().FromCommandMany(args);
-            if (levels.Count() == 0) return;
+            if ((levels?.Count() ?? 0) == 0) return;
+            Accessors.CommandConsoleAccessor.EchoToConsole($"Loading levels:\n- {levels.Join()}");
             CL_GameManager.gMan.LoadLevels(levels.Names());
         };
     }

@@ -1,3 +1,11 @@
+# Version 0.11.2 Load levels update (30 nov 2025)
+
+### Fixed:
+
+* `loadlevels`, `loadregions` and `loadsubregions` should be fixed now.
+Some regions can not be loaded via `loadregions`, I did not manage to find an easy way to get all region's levels so I use in-game `GetLevels(null)` and sometimes it crashes.
+You will see an error message when you try to load such region.
+
 # Version 0.11.1 Load levels update (30 nov 2025)
 
 ### Added:

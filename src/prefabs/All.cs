@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HarmonyLib;
 using MoreCommands.HandleProviders;
 
 namespace MoreCommands;
@@ -87,23 +88,23 @@ public abstract class HandleProvider<T>
         if (args.Length == 0)
         {
             Accessors.CommandConsoleAccessor.EchoToConsole($"Available {typeof(T).Name}:\n- {Handle().Join()}");
-            return null;
+            return new Handle<T>([], Name, Finalizer);
         }
-        IEnumerable<T> result = [];
+        List<T> result = [];
         foreach (string arg in args)
         {
             var filtered = Handle().Filter(arg);
             if (filtered.Count() > 1)
             {
-                Accessors.CommandConsoleAccessor.EchoToConsole($"Ambiguous {typeof(T).Name}: {arg} matches {filtered.Join()}\nchoosing first");
+                Accessors.CommandConsoleAccessor.EchoToConsole($"Ambiguous {typeof(T).Name}: {arg} matches\n- {filtered.Join()}\nchoosing first");
             }
             var obj = filtered.Any();
             if (obj == null)
             {
                 Accessors.CommandConsoleAccessor.EchoToConsole($"No such {typeof(T).Name}: {arg}");
-                return null;
+                return new Handle<T>([], Name, Finalizer);
             }
-            result.Append(obj);
+            result.Add(obj);
         }
         return new Handle<T>(result, Name, Finalizer);
     }

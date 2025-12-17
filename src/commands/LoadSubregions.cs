@@ -17,8 +17,16 @@ public sealed class LoadSubregionCommand : CommandBase
         return args =>
         {
             Handle<M_Subregion> subregions = Prefabs.SubregionProvider().FromCommandMany(args);
-            if (subregions == null) return;
-            CL_GameManager.gMan.LoadLevels(subregions.Data().SelectMany(x => x.levels).Select(x => x.name.ToLower()).ToArray());
+            if ((subregions?.Count() ?? 0) == 0) return;
+            string[] levels = subregions.Data().SelectMany(x => x.levels).Select(x => x.name.ToLower()).ToArray();
+            if (levels.Length == 0)
+            {
+                Accessors.CommandConsoleAccessor.EchoToConsole($"Failed to get levels for subregions:\n- {subregions.Join()}");
+                return;
+            }
+            Accessors.CommandConsoleAccessor.EchoToConsole($"Loading subregions:\n- {subregions.Join()}");
+            Accessors.CommandConsoleAccessor.EchoToConsole($"levels:\n- {string.Join("\n- ", levels)}");
+            CL_GameManager.gMan.LoadLevels(levels);
         };
     }
 

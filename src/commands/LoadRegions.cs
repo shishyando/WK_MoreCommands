@@ -17,8 +17,24 @@ public sealed class LoadRegionCommand : CommandBase
         return args =>
         {
             Handle<M_Region> regions = Prefabs.RegionProvider().FromCommandMany(args);
-            if (regions == null) return;
-            CL_GameManager.gMan.LoadLevels(regions.Data().SelectMany(x => x.GetLevels(null)).Select(x => x.name.ToLower()).ToArray());
+            if ((regions?.Count() ?? 0) == 0) return;
+            try
+            {
+                string[] levels = regions.Data().SelectMany(x => x.GetLevels(null)).Select(x => x.name.ToLower()).ToArray();
+                if (levels.Length == 0)
+                {
+                    Accessors.CommandConsoleAccessor.EchoToConsole($"Failed to generate levels for regions:\n- {regions.Join()}");
+                    return;
+                }
+                Accessors.CommandConsoleAccessor.EchoToConsole($"Loading regions:\n- {regions.Join()}\n");
+                Accessors.CommandConsoleAccessor.EchoToConsole($"levels:\n- {string.Join("\n- ", levels)}");
+                CL_GameManager.gMan.LoadLevels(levels);
+            }
+            catch
+            {
+                Accessors.CommandConsoleAccessor.EchoToConsole($"Failed to generate levels for regions:\n- {regions.Join()}");
+                return;
+            }
         };
     }
 
