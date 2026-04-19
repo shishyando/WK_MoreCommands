@@ -1,8 +1,8 @@
-# Version 0.12.0 Load levels update (19 april 2026)
+# Version 0.12.1 Anniversary update support (19 april 2026)
 
 ### Fixed:
 
-* Updated the mod to work with the anniversary update! Thanks to Dotlake!
+* Updated the mod to work with the anniversary update! Thanks to Dotlake for reviving the mod after the anniversary update came out!
 
 ### Removed:
 * `grubby` command removed in favor of in-game `climbanywhere` 
