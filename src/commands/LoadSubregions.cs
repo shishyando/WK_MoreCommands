@@ -18,7 +18,7 @@ public sealed class LoadSubregionCommand : CommandBase
         {
             Handle<M_Subregion> subregions = Prefabs.SubregionProvider().FromCommandMany(args);
             if ((subregions?.Count() ?? 0) == 0) return;
-            string[] levels = subregions.Data().SelectMany(x => x.levels).Select(x => x.name.ToLower()).ToArray();
+            string[] levels = subregions.Data().SelectMany(x => x.levelReferences).Select(x => x.level.name.ToLower()).ToArray();
             if (levels.Length == 0)
             {
                 Accessors.CommandConsoleAccessor.EchoToConsole($"Failed to get levels for subregions:\n- {subregions.Join()}");

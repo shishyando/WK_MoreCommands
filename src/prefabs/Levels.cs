@@ -14,8 +14,8 @@ public class Levels : HandleProvider<M_Level>
 
     public void Initialize()
     {
-        _levels = CL_AssetManager.GetFullCombinedAssetDatabase().levelPrefabs
-            .Select(obj => obj.GetComponent<M_Level>())
+        _levels = CL_AssetManager.GetFullCombinedAssetDatabase().levelAssets
+            .Select(x => x.level)
             .Where(c => c != null)
             .Distinct()
             .ToList()

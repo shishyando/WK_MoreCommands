@@ -20,7 +20,7 @@ public sealed class LoadRegionCommand : CommandBase
             if ((regions?.Count() ?? 0) == 0) return;
             try
             {
-                string[] levels = regions.Data().SelectMany(x => x.GetLevels(null)).Select(x => x.name.ToLower()).ToArray();
+                string[] levels = regions.Data().SelectMany(x => x.GetLevels(null)).Select(x => x.level.levelName.ToLower()).ToArray();
                 if (levels.Length == 0)
                 {
                     Accessors.CommandConsoleAccessor.EchoToConsole($"Failed to generate levels for regions:\n- {regions.Join()}");
