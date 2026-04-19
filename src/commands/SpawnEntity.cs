@@ -7,7 +7,7 @@ namespace MoreCommands.Commands;
 
 public sealed class SpawnEntityCommand : CommandBase
 {
-    public override string[] Aliases => ["spawn", "spawnentity"];
+    public override string[] Aliases => ["spawn", "spawnent"];
     public override CommandTag Tag => CommandTag.World;
     public override string Description => "Spawn entity by its prefab id with substring search";
     public override bool CheatsOnly => true;
