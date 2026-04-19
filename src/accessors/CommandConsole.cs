@@ -1,12 +1,23 @@
-using System;
-using System.Collections.Generic;
 using HarmonyLib;
+using System;
+using System.Collections;
+using System.Reflection;
 
 namespace MoreCommands.Accessors;
 
 public static class CommandConsoleAccessor
 {
-    public static readonly AccessTools.FieldRef<CommandConsole, Dictionary<string, CommandConsole.Command>> commandsRef = AccessTools.FieldRefAccess<CommandConsole, Dictionary<string, CommandConsole.Command>>("commands");
+    public static IDictionary GetCommands(CommandConsole instance)
+    {
+        FieldInfo commandsField = AccessTools.Field(typeof(CommandConsole), "states");
+
+        object commandStackInstance = commandsField.GetValue(instance);
+        object currentState = commandsField.FieldType.GetMethod("Peek").Invoke(commandStackInstance, null);
+
+        FieldInfo commands = AccessTools.Field(AccessTools.Inner(typeof(CommandConsole), "CommandLineState"), "commands");
+
+        return (IDictionary)commands.GetValue(currentState);
+    }
 
     private static readonly Action<CommandConsole, string[]> EnableCheatsRaw =
     AccessTools.MethodDelegate<Action<CommandConsole, string[]>>(

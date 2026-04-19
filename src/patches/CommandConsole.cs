@@ -60,7 +60,7 @@ public static class CommandConsole_RegisterCommand_Patcher
     {
         // base game registers chains commands and I don't want that behavior
         if (command == null || CommandConsole.instance == null || __instance == null) return false;
-        var commandsDict = Accessors.CommandConsoleAccessor.commandsRef(CommandConsole.instance);
-        return !commandsDict.ContainsKey(command);
+        var commandsDict = Accessors.CommandConsoleAccessor.GetCommands(CommandConsole.instance);
+        return !commandsDict.Contains(command);
     }
 }
