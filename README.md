@@ -8,7 +8,6 @@ Console commands for White Knuckle.
 | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------: | :------------: |
 | `man`, `mhelp`, `morecommandshelp` | prints MoreCommands with their descriptions ('+' = enables cheats)                                                                                                               | Oneshot   | `-`            |
 | `freerun`                          | `godmode` + `deathgoo-stop` + `fullbright` + `infinitestamina` + `notarget`                                                                                                      | Togglable | `+`            |
-| `grubby`                           | grab anything                                                                                                                                                                    | Togglable | `+`            |
 | `cargo`                            | max backstrength                                                                                                                                                                 | Oneshot   | `+`            |
 | `speedyperks`                      | get some movement perks                                                                                                                                                          | Oneshot   | `+`            |
 | `buff`                             | `buff` everything, without perks                                                                                                                                                 | Togglable | `+`            |
@@ -30,10 +29,11 @@ Console commands for White Knuckle.
 | `listlevels`                       | List levels, filtered by `arg`                                                                                                                                                   | Oneshot   | `-`            |
 | `listregions`                      | List regions, filtered by `arg`                                                                                                                                                  | Oneshot   | `-`            |
 | `listsubregions`                   | List subregions, filtered by `arg`                                                                                                                                               | Oneshot   | `-`            |
-| `loadlevels`                       | Load levels by its names with substring search                                                                                                                                   | Oneshot   | `-`            |
 | `loadrandomlevels`                 | Load completely random levels. Recommended commands: `godmode`, `deathgoo-stop`, `deathgoo-height NaN`. Have fun.                                                                | Oneshot   | `-`            |
 | `loadregions`                      | Load some region levels by region name, filtered by `arg`                                                                                                                        | Oneshot   | `-`            |
 | `loadsubregions`                   | Load all subregion levels by subregion name, filtered by `arg`                                                                                                                   | Oneshot   | `-`            |
+<!-- | `grubby`                           | grab anything                                                                                                                                                                    | Togglable | `+`            | -->
+<!-- | `loadlevels`                       | Load levels by its names with substring search                                                                                                                                   | Oneshot   | `-`            | -->
 
 Togglable commands can be run with arguments `true`/`false`
 

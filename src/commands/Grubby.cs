@@ -1,38 +1,38 @@
-using System;
-using MoreCommands.Common;
+// using System;
+// using MoreCommands.Common;
 
-namespace MoreCommands.Commands;
+// namespace MoreCommands.Commands;
 
 
-public sealed class GrubbyCommand : TogglableCommandBase
-{
-    public override string[] Aliases => ["grubby"];
-    public override CommandTag Tag => CommandTag.Player;
-    public override string Description => "grab anything";
-    public override bool CheatsOnly => true;
+// public sealed class GrubbyCommand : TogglableCommandBase
+// {
+//     public override string[] Aliases => ["grubby"];
+//     public override CommandTag Tag => CommandTag.Player;
+//     public override string Description => "grab anything";
+//     public override bool CheatsOnly => true;
 
-    private readonly string BuffId = $"{MyPluginInfo.PLUGIN_GUID}.grubbyCommand";
+//     private readonly string BuffId = $"{MyPluginInfo.PLUGIN_GUID}.grubbyCommand";
 
-    public override Action<string[]> GetLogicCallback()
-    {
-        return args =>
-        {
-            ENT_Player player = ENT_Player.playerObject;
-            if (player == null) return;
-            if (Enabled)
-            {
-                BuffContainer grabBuffC = new()
-                {
-                    id = BuffId,
-                    buffs = [new() { id = "grabAnything", amount = 1e9f, maxAmount = 1e9f }],
-                    loseOverTime = false
-                };
-                player.Buff(grabBuffC);
-            }
-            else
-            {
-                player.curBuffs.RemoveBuffContainer(BuffId);
-            }
-        };
-    }
-}
+//     public override Action<string[]> GetLogicCallback()
+//     {
+//         return args =>
+//         {
+//             ENT_Player player = ENT_Player.playerObject;
+//             if (player == null) return;
+//             if (Enabled)
+//             {
+//                 BuffContainer grabBuffC = new()
+//                 {
+//                     id = BuffId,
+//                     buffs = [new() { id = "grabAnything", amount = 1e9f, maxAmount = 1e9f }],
+//                     loseOverTime = false
+//                 };
+//                 player.Buff(grabBuffC);
+//             }
+//             else
+//             {
+//                 player.curBuffs.RemoveBuffContainer(BuffId);
+//             }
+//         };
+//     }
+// }

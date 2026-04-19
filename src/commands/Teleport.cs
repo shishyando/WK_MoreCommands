@@ -18,7 +18,7 @@ public sealed class TeleportCommand : CommandBase
         { "intro", "m1_intro_01"},
         { "exp", "m1_silos_safearea_01" },
         { "prepipes", "campaign_interlude_silo_to_pipeworks" },
-        { "elevator", "campaign_interlude_pipeworks_to_habitation_01" },
+        // { "elevator", "campaign_interlude_pipeworks_to_habitation_01" }, // not working after the update
         { "teeth", "m3_habitation_shaft_intro" },
         { "pier", "m3_habitation_pier_entrance_01" },
         { "abyss", "m3_habitation_lab_ending" },

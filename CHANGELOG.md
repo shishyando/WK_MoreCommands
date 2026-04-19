@@ -1,3 +1,15 @@
+# Version 0.12.0 Load levels update (19 april 2026)
+
+### Fixed:
+
+* Updated the mod to work with the anniversary update! Thanks to Dotlake!
+
+### Removed:
+* `grubby` command removed in favor of in-game `climbanywhere` 
+* `loadlevels` command removed in favor of in-game `loadlevels` since it has better autocomplete.
+* `elevator` location for `tp` command (but you can use in-game `teleportplayertolevel` with autocomplete) since it was broken. other locations still work.
+
+
 # Version 0.11.2 Load levels update (30 nov 2025)
 
 ### Fixed:
