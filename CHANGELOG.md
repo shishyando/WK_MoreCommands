@@ -1,3 +1,9 @@
+# Version 0.12.2 Anniversary update support (19 april 2026)
+
+### Fixed:
+
+* Fixed an issue that caused the `spawnentity` alias to collide with an internal command, causing issues like the habitation door to not open. Renamed to `spawnent`.
+
 # Version 0.12.1 Anniversary update support (19 april 2026)
 
 ### Fixed:
