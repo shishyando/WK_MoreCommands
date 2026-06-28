@@ -19,8 +19,14 @@ public sealed class LoadRandomLevelsCommand : CommandBase
         {
             IEnumerable<M_Level> levels = Prefabs.Levels().Data();
             int count = levels.Count();
-            levels = levels.OrderBy(x => UnityEngine.Random.value).Take(UnityEngine.Random.RandomRangeInt(0, count));
-            CL_GameManager.gMan.LoadLevels(levels.Select(x => x.name.ToLower()).ToArray());
+            string[] levelNames = levels
+                .OrderBy(x => UnityEngine.Random.value)
+                .Take(UnityEngine.Random.RandomRangeInt(0, count))
+                .Select(x => x.name.ToLower())
+                .ToArray();
+
+            Accessors.CommandConsoleAccessor.EchoToConsole($"Loading random levels:\n- {string.Join("\n- ", levelNames)}");
+            CL_GameManager.gMan.LoadLevels(levelNames);
         };
     }
 }

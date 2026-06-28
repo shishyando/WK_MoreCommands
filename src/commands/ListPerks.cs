@@ -6,9 +6,9 @@ namespace MoreCommands.Commands;
 
 public sealed class BetterListPerksCommand : CommandBase
 {
-    public override string[] Aliases => ["lp", "listperks"];
+    public override string[] Aliases => ["lp", "mclistperks"];
     public override CommandTag Tag => CommandTag.Console;
-    public override string Description => "List perks info, filtered by `arg`";
+    public override string Description => "Enhanced perk list with titles, ids, descriptions, and filtering";
     public override bool CheatsOnly => false;
 
     public override Action<string[]> GetLogicCallback()

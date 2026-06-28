@@ -13,7 +13,7 @@ public static class ENT_Player_CreateCommands_Patcher
         {
             foreach (var alias in c.Aliases)
             {
-                CommandConsole.AddCommand(alias, c.GetCallback(), false);
+                CommandRegistration.AddCommandIfFree(alias, c.GetCallback(), cheat: false);
             }
         }
     }
@@ -36,5 +36,4 @@ public static class ENT_Player_Movement_Patcher
         }
     }
 }
-
 

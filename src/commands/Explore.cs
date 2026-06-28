@@ -13,11 +13,11 @@ public sealed class ExploreCommand : TogglableCommandBase
 
     public override Action<string[]> GetLogicCallback()
     {
-        return CommandRegistry.GetCallback<FreerunCommand>()
-            + new Action<string[]>(args =>
-            {
-                ENT_Player player = ENT_Player.playerObject;
-                player?.Noclip(WhenEnabled(Enabled));
-            });
+        return args =>
+        {
+            CommandRegistry.SetTogglable<FreerunCommand>(Enabled);
+            ENT_Player player = ENT_Player.playerObject;
+            player?.Noclip(WhenEnabled(Enabled));
+        };
     }
 }

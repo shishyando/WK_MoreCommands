@@ -2,7 +2,17 @@
 
 ### Fixed:
 
-* Fixed an issue that caused the `spawnentity` alias to collide with an internal command, causing issues like the habitation door to not open. Renamed to `spawnent`.
+* MoreCommands no longer overrides vanilla commands. Vanilla `spawnentity`, `listlevels` and `listperks` are preserved; the enhanced perk list is available as `lp` or `mclistperks`.
+* Fixed an issue where scene unload cleanup could enable cheats and mark a clean run as cheated while disabling togglable commands.
+* Fixed crashes when commands were run without an active player, world, inventory, camera, or world loader.
+* Fixed `grav` cleanup crashing if the player had already been destroyed during scene unload.
+* Fixed `explore` and `flash` toggling child commands unpredictably instead of setting them to the same enabled state.
+* Fixed entity prefab registration mutating prefabs with generic `GameEntity` components, which could break entity listing, spawning, and wallhack matching.
+* Fixed duplicate vanilla command registration returning null and crashing command builders such as FXManager's `decal_griddepth` registration.
+
+### Removed:
+
+* Removed the MoreCommands `spawn` / `spawnent` entity spawn command in favor of vanilla `spawnentity`, which has better autocomplete and count handling.
 
 # Version 0.12.1 Anniversary update support (19 april 2026)
 
@@ -107,4 +117,3 @@ Showcase: https://www.youtube.com/watch?v=KOxQGqisMBs
 
 ### Todo:
 * ???
-

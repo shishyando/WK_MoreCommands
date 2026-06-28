@@ -31,7 +31,6 @@ public sealed class TeleportCommand : CommandBase
     {
         return args =>
         {
-            ENT_Player player = ENT_Player.playerObject;
             if (args.Length == 0)
             {
                 Accessors.CommandConsoleAccessor.EchoToConsole($"Available locations:\n- {Locations.Keys.Join(delimiter: "\n- ")}");
@@ -54,6 +53,12 @@ public sealed class TeleportCommand : CommandBase
             {
                 Accessors.CommandConsoleAccessor.EchoToConsole($"Ambiguous place to tp: {args[0]} maps to {string.Join(", ", destinations)}\n teleporting to first");
             }
+            if (WorldLoader.instance == null)
+            {
+                Accessors.CommandConsoleAccessor.EchoToConsole("No world loader found");
+                return;
+            }
+
             WorldLoader.instance.TeleportPlayerToTargetLevel([destinations[0]]);
             Accessors.CommandConsoleAccessor.EchoToConsole($"Teleported to {Colors.Highlighted(destinations[0])}");
         };

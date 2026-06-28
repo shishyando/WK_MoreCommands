@@ -64,7 +64,8 @@ public static class OutlinesController
 
     public static void RegisterEntity(GameEntity entity)
     {
-        if (entity == null || _trackedEntitiesIds.ContainsKey(entity) || !Prefabs.Entities().Names().Contains(entity.entityPrefabID.ToLower())) return;
+        string entityIdLower = entity?.entityPrefabID?.ToLower();
+        if (string.IsNullOrEmpty(entityIdLower) || _trackedEntitiesIds.ContainsKey(entity) || !Prefabs.Entities().Names().Contains(entityIdLower)) return;
 
         var renderers = entity.GetComponentsInChildren<Renderer>(true)
             .Where(r => !(r is ParticleSystemRenderer || r is TrailRenderer))
@@ -72,7 +73,7 @@ public static class OutlinesController
 
         if (renderers.Length > 0)
         {
-            _trackedEntitiesIds[entity] = entity.entityPrefabID.ToLower();
+            _trackedEntitiesIds[entity] = entityIdLower;
             RefreshSingle(entity);
         }
     }
@@ -99,7 +100,10 @@ public static class OutlinesController
 
     private static void RefreshSingle(GameEntity entity)
     {
-        bool shouldHighlight = _activeOutlines.TryGetValue(entity.entityPrefabID.ToLower(), out Color targetColor);
+        string entityIdLower = entity?.entityPrefabID?.ToLower();
+        if (string.IsNullOrEmpty(entityIdLower)) return;
+
+        bool shouldHighlight = _activeOutlines.TryGetValue(entityIdLower, out Color targetColor);
         Material outlinesMat = shouldHighlight ? OutlinesMaterialFactory.Get(targetColor) : null;
         var renderers = entity.GetComponentsInChildren<Renderer>(true)
             .Where(r => !(r is ParticleSystemRenderer || r is TrailRenderer))

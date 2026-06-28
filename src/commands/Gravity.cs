@@ -17,6 +17,12 @@ public sealed class GravityCommand : CommandBase
         return args =>
         {
             ENT_Player player = ENT_Player.playerObject;
+            if (player == null)
+            {
+                Accessors.CommandConsoleAccessor.EchoToConsole("No player found");
+                return;
+            }
+
             if (args.Length == 0) {
                 player.SetGravityMult(1f);
                 Accessors.CommandConsoleAccessor.EchoToConsole($"Player gravity set to 1.0");
@@ -36,6 +42,6 @@ public sealed class GravityCommand : CommandBase
     public override void OnExit()
     {
         ENT_Player player = ENT_Player.playerObject;
-        player.SetGravityMult(1f);
+        player?.SetGravityMult(1f);
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using HarmonyLib;
 using MoreCommands.Common;
 using UnityEngine;
@@ -10,22 +11,7 @@ public static class CommandConsole_Awake_Patcher
     [HarmonyPostfix]
     public static void RegisterMoreCommands(CommandConsole __instance)
     {
-        foreach (var c in CommandRegistry.GetCommandsByTag(CommandTag.Console))
-        {
-            foreach (var alias in c.Aliases)
-            {
-                CommandConsole.RemoveCommand(alias); // if game already registered some commands, I will override them
-                CommandConsole.AddCommand(alias, c.GetCallback(), false);
-            }
-        }
-        foreach (var c in CommandRegistry.GetCommandsByTag(CommandTag.World))
-        {
-            foreach (var alias in c.Aliases)
-            {
-                CommandConsole.RemoveCommand(alias); // if game already registered some commands, I will override them
-                CommandConsole.AddCommand(alias, c.GetCallback(), false);
-            }
-        }
+        CommandRegistration.AddCommandsByTag(CommandTag.Console);
     }
 
     [HarmonyPostfix]
@@ -49,6 +35,37 @@ public static class CommandConsole_Awake_Patcher
     }
 }
 
+public static class CommandRegistration
+{
+    public static void AddCommandsByTag(CommandTag tag)
+    {
+        foreach (var command in CommandRegistry.GetCommandsByTag(tag))
+        {
+            foreach (string alias in command.Aliases)
+            {
+                AddCommandIfFree(alias, command.GetCallback(), cheat: false);
+            }
+        }
+    }
+
+    public static void AddCommandIfFree(string alias, Action<string[]> callback, bool cheat)
+    {
+        string command = alias.ToLower();
+
+        if (CommandConsole.instance != null)
+        {
+            var commandsDict = Accessors.CommandConsoleAccessor.GetCommands(CommandConsole.instance);
+            if (commandsDict.Contains(command))
+            {
+                Plugin.Beep.LogInfo($"Skipping MoreCommands alias '{command}' because an existing command already uses it");
+                return;
+            }
+        }
+
+        CommandConsole.AddCommand(command, callback, cheat);
+    }
+}
+
 // it's important to use RegisterCommand and not AddCommand
 // RegisterCommand is called from AddCommand when it ensures that instance is set
 // otherwise you will get an empty instance and hence NullReferenceException
@@ -56,11 +73,16 @@ public static class CommandConsole_Awake_Patcher
 public static class CommandConsole_RegisterCommand_Patcher
 {
     [HarmonyPrefix]
-    public static bool DoNotOverrideExistingCommands(CommandConsole __instance, ref string command)
+    public static bool DoNotOverrideExistingCommands(CommandConsole __instance, ref string command, ref object __result)
     {
         // base game registers chains commands and I don't want that behavior
-        if (command == null || CommandConsole.instance == null || __instance == null) return false;
-        var commandsDict = Accessors.CommandConsoleAccessor.GetCommands(CommandConsole.instance);
-        return !commandsDict.Contains(command);
+        if (command == null || __instance == null) return true;
+
+        string commandKey = command.ToLower();
+        var commandsDict = Accessors.CommandConsoleAccessor.GetCommands(__instance);
+        if (!commandsDict.Contains(commandKey)) return true;
+
+        __result = commandsDict[commandKey];
+        return false;
     }
 }

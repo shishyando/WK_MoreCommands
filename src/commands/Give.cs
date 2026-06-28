@@ -15,9 +15,12 @@ public sealed class GiveCommand : CommandBase
     {
         return args =>
         {
+            Inventory inventory = GetInventoryOrWarn();
+            if (inventory == null) return;
+
             Item clone = Prefabs.ItemProvider().FromCommand(args);
             if (clone == null) return;
-            Inventory.instance.AddItemToInventoryScreen(new UnityEngine.Vector3(0f, 0f, 1f) + UnityEngine.Random.insideUnitSphere * 0.01f, clone, true, false);
+            inventory.AddItemToInventoryScreen(new UnityEngine.Vector3(0f, 0f, 1f) + UnityEngine.Random.insideUnitSphere * 0.01f, clone, true, false);
         };
     }
 }

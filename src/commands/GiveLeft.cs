@@ -15,10 +15,13 @@ public sealed class GiveLeftCommand : CommandBase
     {
         return args =>
         {
+            Inventory inventory = GetInventoryOrWarn();
+            if (inventory == null) return;
+
             Item clone = Prefabs.ItemProvider().FromCommand(args);
             if (clone == null) return;
             clone.bagRotation = new UnityEngine.Quaternion(1, 2, 3, 4);
-            Inventory.instance.AddItemToHand(clone, 0);
+            inventory.AddItemToHand(clone, 0);
         };
     }
 }

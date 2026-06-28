@@ -46,7 +46,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="generators/**/*.cs" />
+    <Compile Remove="generators/**/*.cs;decompiled/**/*.cs;decompile/**/*.cs" />
     <None Include="generators/**/*.cs" />
   </ItemGroup>
 

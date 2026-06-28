@@ -38,9 +38,41 @@ public abstract class CommandBase : ICommand {
         Accessors.CommandConsoleAccessor.EchoToConsole(Colors.COMMAND_SEP);
     }
 
+    protected bool HasRequiredContext()
+    {
+        switch (Tag)
+        {
+            case CommandTag.Player:
+                if (ENT_Player.GetPlayer() != null) return true;
+                Accessors.CommandConsoleAccessor.EchoToConsole("No player found");
+                return false;
+            case CommandTag.World:
+                if (CL_GameManager.gMan != null) return true;
+                Accessors.CommandConsoleAccessor.EchoToConsole("No active game world found");
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    protected static Inventory GetInventoryOrWarn()
+    {
+        if (Inventory.instance != null) return Inventory.instance;
+
+        Accessors.CommandConsoleAccessor.EchoToConsole("No inventory found");
+        return null;
+    }
+
     public virtual Action<string[]> GetCallback(bool withSuffix = true)
     {
-        return EnsureCheats + GetLogicCallback() + (withSuffix ? PrintSuffix : args => {});
+        return args =>
+        {
+            if (!HasRequiredContext()) return;
+
+            EnsureCheats(args);
+            GetLogicCallback()(args);
+            if (withSuffix) PrintSuffix(args);
+        };
     }
 }
 
@@ -60,7 +92,16 @@ public abstract class TogglableCommandBase : CommandBase, ITogglableCommand {
 
     public sealed override Action<string[]> GetCallback(bool withSuffix = true)
     {
-        return UpdateEnabled + (Action<string[]>)EnsureCheats + GetLogicCallback() + PrintEnabled + (withSuffix ? PrintSuffix : args => {});
+        return args =>
+        {
+            if (!HasRequiredContext()) return;
+
+            UpdateEnabled(args);
+            EnsureCheats(args);
+            GetLogicCallback()(args);
+            PrintEnabled(args);
+            if (withSuffix) PrintSuffix(args);
+        };
     }
 
     public static string[] WhenEnabled(bool enabled)
@@ -84,6 +125,9 @@ public abstract class TogglableCommandBase : CommandBase, ITogglableCommand {
 
     public override void OnExit()
     {
-        GetCallback(withSuffix: false)(["false"]);
+        if (!Enabled) return;
+
+        Enabled = false;
+        GetLogicCallback()(["false"]);
     }
 }

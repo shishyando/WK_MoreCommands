@@ -12,19 +12,31 @@ public static class CL_GameManager_Awake_Patcher
     [HarmonyPostfix]
     public static void PatchDatabases(CL_GameManager __instance)
     {
-        WKAssetDatabase baseAssetDatabase = CL_AssetManager.GetBaseAssetDatabase();
+        WKAssetDatabase assetDatabase = CL_AssetManager.GetFullCombinedAssetDatabase();
 
-        IEnumerable<GameObject> joinedCollections = baseAssetDatabase.entityPrefabs
-                                            .Concat(baseAssetDatabase.denizenPrefabs)
-                                            .Concat(baseAssetDatabase.itemPrefabs)
+        IEnumerable<GameObject> joinedCollections = assetDatabase.entityPrefabs
+                                            .Concat(assetDatabase.denizenPrefabs)
+                                            .Concat(assetDatabase.itemPrefabs)
                                             .Where(x => x != null && x.name != null)
                                             .Distinct();
         Dictionary<string, GameEntity> entities = [];
         foreach (GameObject obj in joinedCollections)
         {
-            GameEntity gameEntity = obj.GetComponentInChildren<GameEntity>() ?? obj.AddComponent<GameEntity>();
-            entities.TryAdd(obj.name.ToLower(), gameEntity);
+            GameEntity gameEntity = obj.GetComponentInChildren<GameEntity>(true);
+            if (gameEntity == null || string.IsNullOrWhiteSpace(gameEntity.entityPrefabID)) continue;
+
+            entities.TryAdd(gameEntity.entityPrefabID.ToLower(), gameEntity);
         }
         __instance.gameEntityPrefabs = [.. entities.Values];
+    }
+}
+
+[HarmonyPatch(typeof(CL_GameManager), "Start")]
+public static class CL_GameManager_Start_CommandRegistration_Patcher
+{
+    [HarmonyPostfix]
+    public static void RegisterWorldCommands()
+    {
+        CommandRegistration.AddCommandsByTag(CommandTag.World);
     }
 }

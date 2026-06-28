@@ -13,7 +13,10 @@ public sealed class FlashCommand : TogglableCommandBase
 
     public override Action<string[]> GetLogicCallback()
     {
-        return CommandRegistry.GetCallback<FreerunCommand>(withSuffix: false)
-            + CommandRegistry.GetCallback<BuffCommand>(withSuffix: false);
+        return args =>
+        {
+            CommandRegistry.SetTogglable<FreerunCommand>(Enabled);
+            CommandRegistry.SetTogglable<BuffCommand>(Enabled);
+        };
     }
 }
