@@ -1,4 +1,8 @@
-# Version 0.12.2 Anniversary update support (19 april 2026)
+# Version 0.13.0 Resurrect MoreCommands (29 june 2026)
+
+### Added:
+
+* Added `spiderman`, `justcause`, `loadrandomlevels_nodeathgoo`, and `loadrandomlevels_spiderman` shortcut commands.
 
 ### Fixed:
 
@@ -9,6 +13,7 @@
 * Fixed `explore` and `flash` toggling child commands unpredictably instead of setting them to the same enabled state.
 * Fixed entity prefab registration mutating prefabs with generic `GameEntity` components, which could break entity listing, spawning, and wallhack matching.
 * Fixed duplicate vanilla command registration returning null and crashing command builders such as FXManager's `decal_griddepth` registration.
+* Fixed `wh entity color` disabling active outlines instead of changing their color.
 
 ### Removed:
 

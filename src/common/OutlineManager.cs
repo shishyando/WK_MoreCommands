@@ -42,14 +42,24 @@ public static class OutlinesController
         return _activeOutlines.ContainsKey(entityIdLower);
     }
 
-    public static Color EnableOutlines(string entityIdLower, Color color)
+    public static Color EnableOutlines(string entityIdLower, Color color, bool useDefaultColor = true)
     {
         Plugin.Assert(entityIdLower == entityIdLower.ToLower());
         Plugin.Assert(!IsEnabled(entityIdLower));
 
-        Color resultColor = _activeOutlines[entityIdLower] = _defaultOutlines.Get(entityIdLower, color);
+        Color resultColor = _activeOutlines[entityIdLower] = useDefaultColor ? _defaultOutlines.Get(entityIdLower, color) : color;
         RefreshAll();
         return resultColor;
+    }
+
+    public static Color SetColor(string entityIdLower, Color color)
+    {
+        Plugin.Assert(entityIdLower == entityIdLower.ToLower());
+        Plugin.Assert(IsEnabled(entityIdLower));
+
+        _activeOutlines[entityIdLower] = color;
+        RefreshAll();
+        return color;
     }
 
     public static bool DisableOutlines(string entityIdLower)

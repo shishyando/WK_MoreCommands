@@ -70,21 +70,29 @@ public sealed class WallhackCommand : CommandBase
                 return;
             }
 
-            if (OutlinesController.IsEnabled(entityIdLower))
-            {
-                OutlinesController.DisableOutlines(entityIdLower);
-                Accessors.CommandConsoleAccessor.EchoToConsole($"Disabled outlines for: {entityIdLower}");
-                return;
-            }
-
+            bool hasColorArg = args.Length == 2;
             Color c = UnityEngine.Random.ColorHSV();
-            if (args.Length == 2 && !ColorUtility.TryParseHtmlString(args[1], out c))
+            if (hasColorArg && !ColorUtility.TryParseHtmlString(args[1], out c))
             {
                 Accessors.CommandConsoleAccessor.EchoToConsole($"Failed to parse color {args[1]}");
                 return;
             }
 
-            c = OutlinesController.EnableOutlines(entityIdLower, c);
+            if (OutlinesController.IsEnabled(entityIdLower))
+            {
+                if (hasColorArg)
+                {
+                    c = OutlinesController.SetColor(entityIdLower, c);
+                    Accessors.CommandConsoleAccessor.EchoToConsole($"Changed outlines for {Colors.Tagged(entityIdLower, c)}, color: {Colors.Tagged(Colors.Str(c), c)}");
+                    return;
+                }
+
+                OutlinesController.DisableOutlines(entityIdLower);
+                Accessors.CommandConsoleAccessor.EchoToConsole($"Disabled outlines for: {entityIdLower}");
+                return;
+            }
+
+            c = OutlinesController.EnableOutlines(entityIdLower, c, useDefaultColor: !hasColorArg);
             Accessors.CommandConsoleAccessor.EchoToConsole($"Enabled outlines for {Colors.Tagged(entityIdLower, c)}, color: {Colors.Tagged(Colors.Str(c), c)}");
         };
     }

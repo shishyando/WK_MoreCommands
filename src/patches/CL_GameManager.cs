@@ -35,7 +35,7 @@ public static class CL_GameManager_Awake_Patcher
 public static class CL_GameManager_Start_CommandRegistration_Patcher
 {
     [HarmonyPostfix]
-    public static void RegisterWorldCommands()
+    public static void RegisterWorldCommands(CL_GameManager __instance)
     {
         CommandRegistration.AddCommandsByTag(CommandTag.World);
     }

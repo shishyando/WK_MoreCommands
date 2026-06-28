@@ -9,13 +9,7 @@ public static class ENT_Player_CreateCommands_Patcher
 {
     public static void Postfix(ENT_Player __instance)
     {
-        foreach (var c in CommandRegistry.GetCommandsByTag(CommandTag.Player))
-        {
-            foreach (var alias in c.Aliases)
-            {
-                CommandRegistration.AddCommandIfFree(alias, c);
-            }
-        }
+        CommandRegistration.AddCommandsByTag(CommandTag.Player);
     }
 }
 
