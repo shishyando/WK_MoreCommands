@@ -10,7 +10,14 @@ public sealed class LoadSubregionCommand : CommandBase
     public override string[] Aliases => ["loadsubregions"];
     public override CommandTag Tag => CommandTag.World;
     public override string Description => "Load all subregion levels by subregion name, filtered by `arg`";
-    public override bool CheatsOnly => false;
+    public override bool EnablesCheatsOnUse => false;
+
+    public override void ConfigureBuilder(CommandConsole.CommandBuilder builder)
+    {
+        builder
+            .AutocompleteCustom(autocomplete => AutocompleteHelpers.VariadicFrom(autocomplete, Prefabs.Subregions))
+            .AutocompleteValidator(validator => AutocompleteHelpers.ValidateVariadicFrom(validator, Prefabs.Subregions));
+    }
 
     public override Action<string[]> GetLogicCallback()
     {

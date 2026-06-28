@@ -8,7 +8,7 @@ public interface ICommand {
     string[] Aliases { get; }
     CommandTag Tag { get; }
     string Description { get; }
-    bool CheatsOnly { get; }
+    bool EnablesCheatsOnUse { get; }
     Action<string[]> GetCallback(bool withSuffix = true);
     Action<string[]> GetLogicCallback();
     void OnExit();
@@ -24,13 +24,15 @@ public abstract class CommandBase : ICommand {
     public abstract CommandTag Tag { get; }
     public abstract string Description { get; }
 
-    public abstract bool CheatsOnly { get; }
+    public abstract bool EnablesCheatsOnUse { get; }
     public abstract Action<string[]> GetLogicCallback();
     public virtual void OnExit() {}
 
-    public void EnsureCheats(string[] args)
+    public virtual void ConfigureBuilder(CommandConsole.CommandBuilder builder) {}
+
+    public void EnableCheatsIfNeeded(string[] args)
     {
-        if (CheatsOnly) Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabled();
+        if (EnablesCheatsOnUse) Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabled();
     }
 
     public void PrintSuffix(string[] args)
@@ -69,7 +71,7 @@ public abstract class CommandBase : ICommand {
         {
             if (!HasRequiredContext()) return;
 
-            EnsureCheats(args);
+            EnableCheatsIfNeeded(args);
             GetLogicCallback()(args);
             if (withSuffix) PrintSuffix(args);
         };
@@ -79,6 +81,14 @@ public abstract class CommandBase : ICommand {
 public abstract class TogglableCommandBase : CommandBase, ITogglableCommand {
     public bool Enabled { get; set; }
     public string EnabledStr => Enabled ? "enabled" : "disabled";
+
+    public override void ConfigureBuilder(CommandConsole.CommandBuilder builder)
+    {
+        builder
+            .AutocompleteCustom(AutocompleteHelpers.OptionalSingleBool)
+            .AutocompleteValidator(AutocompleteHelpers.ValidateOptionalSingleBool)
+            .OverValue(() => Enabled);
+    }
 
     public void UpdateEnabled(string[] args)
     {
@@ -97,7 +107,7 @@ public abstract class TogglableCommandBase : CommandBase, ITogglableCommand {
             if (!HasRequiredContext()) return;
 
             UpdateEnabled(args);
-            EnsureCheats(args);
+            EnableCheatsIfNeeded(args);
             GetLogicCallback()(args);
             PrintEnabled(args);
             if (withSuffix) PrintSuffix(args);

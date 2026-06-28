@@ -43,12 +43,12 @@ public static class CommandRegistration
         {
             foreach (string alias in command.Aliases)
             {
-                AddCommandIfFree(alias, command.GetCallback(), cheat: false);
+                AddCommandIfFree(alias, command);
             }
         }
     }
 
-    public static void AddCommandIfFree(string alias, Action<string[]> callback, bool cheat)
+    public static void AddCommandIfFree(string alias, ICommand source)
     {
         string command = alias.ToLower();
 
@@ -62,7 +62,14 @@ public static class CommandRegistration
             }
         }
 
-        CommandConsole.AddCommand(command, callback, cheat);
+        var builder = CommandConsole.BuildCommand(command, source.GetCallback())
+            .NotCheat()
+            .Description(source.Description);
+
+        if (source is CommandBase commandBase)
+        {
+            commandBase.ConfigureBuilder(builder);
+        }
     }
 }
 

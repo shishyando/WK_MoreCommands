@@ -10,7 +10,14 @@ public sealed class ListEntitiesCommand : CommandBase
     public override string[] Aliases => ["listentities"];
     public override CommandTag Tag => CommandTag.Console;
     public override string Description => "List entities, filtered by `arg`";
-    public override bool CheatsOnly => false;
+    public override bool EnablesCheatsOnUse => false;
+
+    public override void ConfigureBuilder(CommandConsole.CommandBuilder builder)
+    {
+        builder
+            .AutocompleteCustom(autocomplete => AutocompleteHelpers.OptionalSingleFrom(autocomplete, Prefabs.Entities))
+            .AutocompleteValidator(validator => AutocompleteHelpers.ValidateOptionalSingleFrom(validator, Prefabs.Entities));
+    }
 
     public override Action<string[]> GetLogicCallback()
     {

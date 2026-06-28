@@ -46,7 +46,7 @@ public static class Colors
             CommandTag.Console => C_CONSOLE,
             _ => WHITE,
         };
-        string prefix = c.CheatsOnly ? CHEAT_SIGN : "-";
+        string prefix = c.EnablesCheatsOnUse ? CHEAT_SIGN : "-";
 
         return $"{prefix} {Tagged(c.Aliases.Join(), color)}:\n{Tagged(c.Description, C_DESCRIPTION)}";
         // return Tagged($"{prefix} {c.Aliases.Join()}:\n{c.Description}", color);

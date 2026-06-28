@@ -9,7 +9,7 @@ public sealed class FreerunCommand : TogglableCommandBase
     public override string[] Aliases => ["freerun"];
     public override CommandTag Tag => CommandTag.Player;
     public override string Description => "godmode + deathgoo-stop + fullbright + infinitestamina + notarget";
-    public override bool CheatsOnly => true;
+    public override bool EnablesCheatsOnUse => true;
 
     public override Action<string[]> GetLogicCallback()
     {

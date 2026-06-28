@@ -11,7 +11,7 @@ public sealed class LoadRandomLevelsCommand : CommandBase
     public override string[] Aliases => ["loadrandomlevels"];
     public override CommandTag Tag => CommandTag.World;
     public override string Description => "Load completely random levels\nRecommended commands: `godmode`, `deathgoo-goaway`\nHave fun";
-    public override bool CheatsOnly => false;
+    public override bool EnablesCheatsOnUse => false;
 
     public override Action<string[]> GetLogicCallback()
     {

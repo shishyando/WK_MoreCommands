@@ -9,7 +9,7 @@ public sealed class CargoCommand : CommandBase
     public override string[] Aliases => ["cargo"];
     public override CommandTag Tag => CommandTag.Player;
     public override string Description => "max backstrength";
-    public override bool CheatsOnly => true;
+    public override bool EnablesCheatsOnUse => true;
 
     public override Action<string[]> GetLogicCallback()
     {

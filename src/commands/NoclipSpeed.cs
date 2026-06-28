@@ -11,7 +11,15 @@ public sealed class NoclipSpeed : CommandBase
     public override string[] Aliases => ["ns", "noclipspeed"];
     public override CommandTag Tag => CommandTag.Player;
     public override string Description => "set noclip speed multiplier (1 is default)";
-    public override bool CheatsOnly => true;
+    public override bool EnablesCheatsOnUse => true;
+
+    public override void ConfigureBuilder(CommandConsole.CommandBuilder builder)
+    {
+        builder
+            .AutocompleteCustom(AutocompleteHelpers.OptionalSingleFloat)
+            .AutocompleteValidator(AutocompleteHelpers.ValidateOptionalSingleFloat)
+            .OverValue(() => ENT_Player_Movement_Patcher.NoclipSpeedMultiplier);
+    }
 
     public override Action<string[]> GetLogicCallback()
     {

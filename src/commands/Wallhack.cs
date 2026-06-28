@@ -11,7 +11,46 @@ public sealed class WallhackCommand : CommandBase
     public override string[] Aliases => ["wallhack", "wh"];
     public override CommandTag Tag => CommandTag.World;
     public override string Description => "Add outlines to any game entity\n wh [entity] (optional color like 'red', 'green' or '#RRGGBB')\nentity is searched by substring\nwithout params will toggle default behaviour";
-    public override bool CheatsOnly => true;
+    public override bool EnablesCheatsOnUse => true;
+
+    public override void ConfigureBuilder(CommandConsole.CommandBuilder builder)
+    {
+        builder
+            .AutocompleteCustom(AutocompleteArgs)
+            .AutocompleteValidator(ValidateArgs);
+    }
+
+    private static void AutocompleteArgs(CommandConsole.CommandAutocomplete autocomplete)
+    {
+        switch (autocomplete.activeArg)
+        {
+            case 0:
+                autocomplete.FromArray(AutocompleteHelpers.Names(Prefabs.Entities));
+                return;
+            case 1:
+                autocomplete.FromArray(AutocompleteHelpers.ColorValues);
+                return;
+            default:
+                autocomplete.Reject();
+                return;
+        }
+    }
+
+    private static void ValidateArgs(CommandConsole.CommandValidator validator)
+    {
+        string value = validator.ArgumentAt(validator.activeArg);
+        switch (validator.activeArg)
+        {
+            case 0:
+                if (AutocompleteHelpers.HasMatch(Prefabs.Entities, value)) return;
+                break;
+            case 1:
+                if (ColorUtility.TryParseHtmlString(value, out Color _)) return;
+                break;
+        }
+
+        validator.Reject();
+    }
 
     public override Action<string[]> GetLogicCallback()
     {

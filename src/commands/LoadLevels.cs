@@ -10,7 +10,7 @@
 //     public override string[] Aliases => ["loadlevels"];
 //     public override CommandTag Tag => CommandTag.World;
 //     public override string Description => "Load levels by its names with substring search";
-//     public override bool CheatsOnly => false;
+//     public override bool EnablesCheatsOnUse => false;
 
 //     public override Action<string[]> GetLogicCallback()
 //     {

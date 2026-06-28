@@ -10,7 +10,7 @@ public sealed class SpeedyPerksCommand : CommandBase
     public override string[] Aliases => ["speedyperks"];
     public override CommandTag Tag => CommandTag.Player;
     public override string Description => "get some movement perks";
-    public override bool CheatsOnly => true;
+    public override bool EnablesCheatsOnUse => true;
 
     private static List<string> MovementPerks = [
         "Perk_ArmoredPlating",

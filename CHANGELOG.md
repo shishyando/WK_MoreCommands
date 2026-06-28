@@ -14,6 +14,10 @@
 
 * Removed the MoreCommands `spawn` / `spawnent` entity spawn command in favor of vanilla `spawnentity`, which has better autocomplete and count handling.
 
+### Changed:
+
+* MoreCommands now registers commands with native console descriptions, autocomplete, validation, and value previews where appropriate.
+
 # Version 0.12.1 Anniversary update support (19 april 2026)
 
 ### Fixed:

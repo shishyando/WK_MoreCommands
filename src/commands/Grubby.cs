@@ -9,7 +9,7 @@
 //     public override string[] Aliases => ["grubby"];
 //     public override CommandTag Tag => CommandTag.Player;
 //     public override string Description => "grab anything";
-//     public override bool CheatsOnly => true;
+//     public override bool EnablesCheatsOnUse => true;
 
 //     private readonly string BuffId = $"{MyPluginInfo.PLUGIN_GUID}.grubbyCommand";
 

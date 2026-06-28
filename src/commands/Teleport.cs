@@ -12,7 +12,7 @@ public sealed class TeleportCommand : CommandBase
     public override string[] Aliases => ["tp"];
     public override CommandTag Tag => CommandTag.Player;
     public override string Description => "teleport to `arg`, no `arg` = list locations";
-    public override bool CheatsOnly => true;
+    public override bool EnablesCheatsOnUse => true;
 
     private static readonly Dictionary<string, string> Locations = new() {
         { "intro", "m1_intro_01"},
@@ -25,6 +25,33 @@ public sealed class TeleportCommand : CommandBase
         // shortcuts? pier otherside? obelisk?
         // need to preload levels?
     };
+
+    public override void ConfigureBuilder(CommandConsole.CommandBuilder builder)
+    {
+        builder
+            .AutocompleteCustom(AutocompleteLocation)
+            .AutocompleteValidator(ValidateLocation);
+    }
+
+    private static void AutocompleteLocation(CommandConsole.CommandAutocomplete autocomplete)
+    {
+        if (autocomplete.activeArg == 0)
+        {
+            autocomplete.FromArray([.. Locations.Keys]);
+            return;
+        }
+
+        autocomplete.Reject();
+    }
+
+    private static void ValidateLocation(CommandConsole.CommandValidator validator)
+    {
+        string value = validator.ArgumentAt(validator.activeArg);
+        if (validator.activeArg != 0 || !Locations.Keys.Any(x => x.Contains(value.ToLower())))
+        {
+            validator.Reject();
+        }
+    }
 
 
     public override Action<string[]> GetLogicCallback()
