@@ -9,7 +9,7 @@ namespace MoreCommands.Outlines;
 
 public static class OutlinesController
 {
-    private static Dictionary<GameEntity, string> _trackedEntitiesIds = [];
+    private static readonly Dictionary<GameEntity, string> _trackedEntitiesIds = [];
 
     private static Dictionary<string, Color> _activeOutlines = [];
     private static readonly Dictionary<string, Color> _defaultOutlines = new()
@@ -37,14 +37,14 @@ public static class OutlinesController
 
     public static bool IsEnabled(string entityIdLower)
     {
-        Plugin.Assert(entityIdLower == entityIdLower.ToLower());
+        Plugin.Assert(entityIdLower == entityIdLower.ToLowerInvariant());
 
         return _activeOutlines.ContainsKey(entityIdLower);
     }
 
     public static Color EnableOutlines(string entityIdLower, Color color, bool useDefaultColor = true)
     {
-        Plugin.Assert(entityIdLower == entityIdLower.ToLower());
+        Plugin.Assert(entityIdLower == entityIdLower.ToLowerInvariant());
         Plugin.Assert(!IsEnabled(entityIdLower));
 
         Color resultColor = _activeOutlines[entityIdLower] = useDefaultColor ? _defaultOutlines.Get(entityIdLower, color) : color;
@@ -54,7 +54,7 @@ public static class OutlinesController
 
     public static Color SetColor(string entityIdLower, Color color)
     {
-        Plugin.Assert(entityIdLower == entityIdLower.ToLower());
+        Plugin.Assert(entityIdLower == entityIdLower.ToLowerInvariant());
         Plugin.Assert(IsEnabled(entityIdLower));
 
         _activeOutlines[entityIdLower] = color;
@@ -64,7 +64,7 @@ public static class OutlinesController
 
     public static bool DisableOutlines(string entityIdLower)
     {
-        Plugin.Assert(entityIdLower == entityIdLower.ToLower());
+        Plugin.Assert(entityIdLower == entityIdLower.ToLowerInvariant());
         Plugin.Assert(IsEnabled(entityIdLower));
 
         bool removed = _activeOutlines.Remove(entityIdLower);
@@ -74,14 +74,11 @@ public static class OutlinesController
 
     public static void RegisterEntity(GameEntity entity)
     {
-        string entityIdLower = entity?.entityPrefabID?.ToLower();
+        string entityIdLower = entity?.entityPrefabID?.ToLowerInvariant();
         if (string.IsNullOrEmpty(entityIdLower) || _trackedEntitiesIds.ContainsKey(entity) || !Prefabs.Entities().Names().Contains(entityIdLower)) return;
 
-        var renderers = entity.GetComponentsInChildren<Renderer>(true)
-            .Where(r => !(r is ParticleSystemRenderer || r is TrailRenderer))
-            .ToArray();
-
-        if (renderers.Length > 0)
+        if (entity.GetComponentsInChildren<Renderer>(true)
+            .Any(renderer => renderer is not ParticleSystemRenderer && renderer is not TrailRenderer))
         {
             _trackedEntitiesIds[entity] = entityIdLower;
             RefreshSingle(entity);
@@ -110,14 +107,13 @@ public static class OutlinesController
 
     private static void RefreshSingle(GameEntity entity)
     {
-        string entityIdLower = entity?.entityPrefabID?.ToLower();
+        string entityIdLower = entity?.entityPrefabID?.ToLowerInvariant();
         if (string.IsNullOrEmpty(entityIdLower)) return;
 
         bool shouldHighlight = _activeOutlines.TryGetValue(entityIdLower, out Color targetColor);
         Material outlinesMat = shouldHighlight ? OutlinesMaterialFactory.Get(targetColor) : null;
         var renderers = entity.GetComponentsInChildren<Renderer>(true)
-            .Where(r => !(r is ParticleSystemRenderer || r is TrailRenderer))
-            .ToArray();
+            .Where(renderer => renderer is not ParticleSystemRenderer && renderer is not TrailRenderer);
 
         foreach (var r in renderers)
         {
@@ -143,7 +139,7 @@ public static class OutlinesController
 public static class OutlinesMaterialFactory
 {
     public const string SHADER_NAME = "GUI/Text Shader";
-    private static Dictionary<Color, Material> _cache = [];
+    private static readonly Dictionary<Color, Material> _cache = [];
 
     public static Material Get(Color color)
     {

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace MoreCommands.Common;
@@ -22,6 +23,16 @@ public static class AutocompleteHelpers
         "orange",
     ];
 
+    public static void NoArguments(CommandConsole.CommandAutocomplete autocomplete)
+    {
+        autocomplete.Reject();
+    }
+
+    public static void ValidateNoArguments(CommandConsole.CommandValidator validator)
+    {
+        validator.Reject();
+    }
+
     public static void OptionalSingleFloat(CommandConsole.CommandAutocomplete autocomplete)
     {
         if (autocomplete.activeArg > 0)
@@ -32,7 +43,9 @@ public static class AutocompleteHelpers
 
     public static void ValidateOptionalSingleFloat(CommandConsole.CommandValidator validator)
     {
-        if (validator.activeArg != 0 || !float.TryParse(validator.ArgumentAt(validator.activeArg), out _))
+        if (validator.activeArg != 0
+            || !float.TryParse(validator.ArgumentAt(validator.activeArg), out float value)
+            || !IsFinite(value))
         {
             validator.Reject();
         }
@@ -68,22 +81,30 @@ public static class AutocompleteHelpers
         autocomplete.Reject();
     }
 
-    public static void ValidateOptionalSingleFrom<T>(CommandConsole.CommandValidator validator, Func<Handle<T>> getHandle)
+    public static void ValidateOptionalSingleFilter(CommandConsole.CommandValidator validator)
     {
-        if (validator.activeArg != 0 || !HasMatch(getHandle, validator.ArgumentAt(validator.activeArg)))
+        if (validator.activeArg != 0)
         {
             validator.Reject();
         }
     }
 
-    public static void VariadicFrom<T>(CommandConsole.CommandAutocomplete autocomplete, Func<Handle<T>> getHandle)
+    public static void ValidateOptionalSingleExactFrom<T>(CommandConsole.CommandValidator validator, Func<Handle<T>> getHandle)
+    {
+        if (validator.activeArg != 0 || !HasExactMatch(getHandle, validator.ArgumentAt(validator.activeArg)))
+        {
+            validator.Reject();
+        }
+    }
+
+    public static void VariadicExactFrom<T>(CommandConsole.CommandAutocomplete autocomplete, Func<Handle<T>> getHandle)
     {
         autocomplete.FromArray(Names(getHandle));
     }
 
-    public static void ValidateVariadicFrom<T>(CommandConsole.CommandValidator validator, Func<Handle<T>> getHandle)
+    public static void ValidateVariadicExactFrom<T>(CommandConsole.CommandValidator validator, Func<Handle<T>> getHandle)
     {
-        if (!HasMatch(getHandle, validator.ArgumentAt(validator.activeArg)))
+        if (!HasExactMatch(getHandle, validator.ArgumentAt(validator.activeArg)))
         {
             validator.Reject();
         }
@@ -94,9 +115,27 @@ public static class AutocompleteHelpers
         return [.. getHandle().Names().Where(x => !string.IsNullOrWhiteSpace(x))];
     }
 
-    public static bool HasMatch<T>(Func<Handle<T>> getHandle, string value)
+    public static bool HasExactMatch<T>(Func<Handle<T>> getHandle, string value)
     {
         return !string.IsNullOrWhiteSpace(value)
-            && getHandle().Filter(value).Names().Any(x => !string.IsNullOrWhiteSpace(x));
+            && getHandle().FilterExact(value).Data().Any();
+    }
+
+    public static bool IsFinite(float value)
+    {
+        return !float.IsNaN(value) && !float.IsInfinity(value);
+    }
+
+    public static string[] WithAcceptedCurrentValue(IEnumerable<string> suggestions, string current, Func<string, bool> accepts)
+    {
+        string[] values = [.. suggestions.Where(value => !string.IsNullOrWhiteSpace(value))];
+        if (string.IsNullOrWhiteSpace(current)
+            || values.Contains(current, StringComparer.OrdinalIgnoreCase)
+            || !accepts(current))
+        {
+            return values;
+        }
+
+        return [current, .. values];
     }
 }

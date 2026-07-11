@@ -9,8 +9,18 @@ public sealed class ManCommand : CommandBase
 {
     public override string[] Aliases => ["man", "mhelp", "morecommandshelp"];
     public override CommandTag Tag => CommandTag.Console;
-    public override string Description => "prints MoreCommands with their descriptions ('+' = enables cheats)";
+    public override string Description => "List MoreCommands help, optionally for one command; '+' means it enables cheats";
     public override bool EnablesCheatsOnUse => false;
+
+    protected override bool TryValidateArguments(string[] args, out string error)
+    {
+        bool valid = args.Length <= 1
+            && (args.Length == 0
+                || CommandRegistry.GetAllCommands().Any(command =>
+                    command.Aliases.Contains(args[0], StringComparer.OrdinalIgnoreCase)));
+        error = valid ? null : "Usage: man [MoreCommands command]";
+        return valid;
+    }
 
     public override void ConfigureBuilder(CommandConsole.CommandBuilder builder)
     {
@@ -23,7 +33,8 @@ public sealed class ManCommand : CommandBase
     {
         if (autocomplete.activeArg == 0)
         {
-            autocomplete.FromArray([.. CommandRegistry.GetAllCommands().SelectMany(command => command.Aliases)]);
+            string[] aliases = [.. CommandRegistry.GetAllCommands().SelectMany(command => command.Aliases)];
+            autocomplete.FromArray(aliases);
             return;
         }
 
@@ -33,23 +44,22 @@ public sealed class ManCommand : CommandBase
     private static void ValidateCommand(CommandConsole.CommandValidator validator)
     {
         string value = validator.ArgumentAt(validator.activeArg);
-        if (validator.activeArg != 0 || !CommandRegistry.GetAllCommands().Any(command => command.Aliases.Contains(value)))
+        if (validator.activeArg != 0
+            || !CommandRegistry.GetAllCommands().Any(command =>
+                command.Aliases.Contains(value, StringComparer.OrdinalIgnoreCase)))
         {
             validator.Reject();
         }
     }
 
-    public override Action<string[]> GetLogicCallback()
+    public override void Execute(string[] args)
     {
-        return args =>
+        foreach (ICommand c in CommandRegistry.GetAllCommands().OrderBy(x => (x.Tag, x.Aliases[0])))
         {
-            foreach (ICommand c in CommandRegistry.GetAllCommands().OrderBy(x => (x.Tag, x.Aliases[0])))
+            if (args.Length == 0 || c.Aliases.Contains(args[0], StringComparer.OrdinalIgnoreCase))
             {
-                if (args.Length == 0 || c.Aliases.Contains(args[0]))
-                {
-                    Accessors.CommandConsoleAccessor.EchoToConsole(Colors.FormatCommand(c));
-                }
+                Accessors.CommandConsoleAccessor.EchoToConsole(Colors.FormatCommand(c));
             }
-        };
+        }
     }
 }

@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
+
 namespace MoreCommands.Common;
 
 public static partial class CommandRegistry
 {
     static partial void RegisterAll();
-    public static List<ICommand> RegisteredCommands = [];
-    public static bool Initialized = false;
+    private static readonly List<ICommand> RegisteredCommands = [];
+    private static bool Initialized;
 
     public static void InitializeCommands()
     {
@@ -24,9 +25,9 @@ public static partial class CommandRegistry
         Dictionary<string, string> failedAliases = [];
         foreach (string alias in command.Aliases)
         {
-            ICommand found = RegisteredCommands.Find(c => c.Aliases.Contains(alias));
+            ICommand found = RegisteredCommands.Find(c => c.Aliases.Contains(alias, StringComparer.OrdinalIgnoreCase));
             if (found != null)
-                failedAliases.Add(alias, found.GetType().ToString());
+                failedAliases.TryAdd(alias, found.GetType().ToString());
         }
         if (failedAliases.Count > 0)
         {
@@ -49,22 +50,12 @@ public static partial class CommandRegistry
         return [.. RegisteredCommands.Where(c => c.Tag == tag)];
     }
 
-    public static ICommand GetCommand<T>() where T : ICommand
+    public static T GetCommand<T>() where T : class, ICommand
     {
-        return RegisteredCommands.FirstOrDefault(c => c.GetType() == typeof(T));
+        return RegisteredCommands.OfType<T>().FirstOrDefault();
     }
 
-    public static Action<string[]> GetCallback<T>(bool withSuffix = true) where T : ICommand
-    {
-        return RegisteredCommands.FirstOrDefault(c => c.GetType() == typeof(T))?.GetCallback(withSuffix) ?? (args => { Plugin.Beep.LogWarning($"Command {typeof(T)} not found"); });
-    }
-
-    public static Action<string[]> GetLogicCallback<T>() where T : ICommand
-    {
-        return RegisteredCommands.FirstOrDefault(c => c.GetType() == typeof(T))?.GetLogicCallback() ?? (args => { Plugin.Beep.LogWarning($"Command {typeof(T)} not found"); });
-    }
-
-    public static void SetTogglable<T>(bool enabled) where T : ICommand
+    public static void SetTogglable<T>(bool enabled) where T : class, ICommand
     {
         if (GetCommand<T>() is not ITogglableCommand command)
         {
@@ -73,7 +64,7 @@ public static partial class CommandRegistry
         }
 
         command.Enabled = enabled;
-        command.GetLogicCallback()([enabled.ToString().ToLower()]);
+        command.Execute([enabled ? "true" : "false"]);
     }
 
     public static void OnExit()

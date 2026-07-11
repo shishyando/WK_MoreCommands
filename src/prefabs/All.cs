@@ -1,69 +1,32 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HarmonyLib;
 using MoreCommands.HandleProviders;
 
 namespace MoreCommands;
 
 public static class Prefabs
 {
-    private static readonly Levels _levels = new();
     private static readonly Regions _regions = new();
     private static readonly Subregions _subregions = new();
     private static readonly Entities _entities = new();
     private static readonly Items _items = new();
-    
-    public static Handle<M_Level> Levels()
-    {
-        return _levels.Handle();
-    }
-    public static Levels LevelProvider()
-    {
-        return _levels;
-    }
 
-    public static Handle<M_Region> Regions()
-    {
-        return _regions.Handle();
-    }
-    public static Regions RegionProvider()
-    {
-        return _regions;
-    }
+    public static Handle<M_Region> Regions() => _regions.Handle();
+    public static Regions RegionProvider() => _regions;
 
-    public static Handle<M_Subregion> Subregions()
-    {
-        return _subregions.Handle();
-    }
-    public static Subregions SubregionProvider()
-    {
-        return _subregions;
-    }
+    public static Handle<M_Subregion> Subregions() => _subregions.Handle();
+    public static Subregions SubregionProvider() => _subregions;
 
-    public static Handle<GameEntity> Entities()
-    {
-        return _entities.Handle();
-    }
-    public static Entities EntityProvider()
-    {
-        return _entities;
-    }
+    public static Handle<GameEntity> Entities() => _entities.Handle();
 
-    public static Handle<Item> Items()
-    {
-        return _items.Handle();
-    }
-    public static Items ItemProvider()
-    {
-        return _items;
-    }
+    public static Handle<Item> Items() => _items.Handle();
+    public static Items ItemProvider() => _items;
 }
 
 public abstract class HandleProvider<T>
 {
     public abstract Func<T, string> Name {get;}
-    public virtual Func<T, T> Finalizer {get;} = obj => obj;
     public abstract Handle<T> Handle();
     
     public virtual T FromCommand(string[] args)
@@ -73,7 +36,7 @@ public abstract class HandleProvider<T>
             Accessors.CommandConsoleAccessor.EchoToConsole($"Available {typeof(T).Name}:\n- {Handle().Join()}");
             return default;
         }
-        var obj = Handle().Filter(args[0]).Any();
+        var obj = Handle().FilterExact(args[0]).Any();
         if (obj == null)
         {
             Accessors.CommandConsoleAccessor.EchoToConsole($"No such {typeof(T).Name}: {args[0]}");
@@ -88,63 +51,63 @@ public abstract class HandleProvider<T>
         if (args.Length == 0)
         {
             Accessors.CommandConsoleAccessor.EchoToConsole($"Available {typeof(T).Name}:\n- {Handle().Join()}");
-            return new Handle<T>([], Name, Finalizer);
+            return new Handle<T>([], Name);
         }
         List<T> result = [];
         foreach (string arg in args)
         {
-            var filtered = Handle().Filter(arg);
-            if (filtered.Count() > 1)
-            {
-                Accessors.CommandConsoleAccessor.EchoToConsole($"Ambiguous {typeof(T).Name}: {arg} matches\n- {filtered.Join()}\nchoosing first");
-            }
-            var obj = filtered.Any();
+            T obj = Handle().FilterExact(arg).Any();
             if (obj == null)
             {
                 Accessors.CommandConsoleAccessor.EchoToConsole($"No such {typeof(T).Name}: {arg}");
-                return new Handle<T>([], Name, Finalizer);
+                return new Handle<T>([], Name);
             }
             result.Add(obj);
         }
-        return new Handle<T>(result, Name, Finalizer);
+        return new Handle<T>(result, Name);
     }
 }
 
-public class Handle<T>(IEnumerable<T> d, Func<T, string> nameGetter, Func<T, T> finalizer)
+public class Handle<T>(IEnumerable<T> data, Func<T, string> nameGetter)
 {
-    private readonly IEnumerable<T> _data = d;
-    private readonly Func<T, string> _nameGetter = x => nameGetter(x)?.ToLower() ?? null;
-    private readonly Func<T, T> _finalizer = finalizer;
+    private readonly IEnumerable<T> _data = data;
+    private readonly Func<T, string> _nameGetter = nameGetter;
+
+    private string GetName(T value)
+    {
+        return _nameGetter(value)?.ToLowerInvariant();
+    }
 
     public Handle<T> Filter(string filter)
     {
-        return new(_data.Where(x => Helpers.Substr(_nameGetter(x), filter.ToLower())), _nameGetter, _finalizer);
+        return new(_data.Where(value => Helpers.Substr(GetName(value), filter)), _nameGetter);
+    }
+
+    public Handle<T> FilterExact(string name)
+    {
+        return new(
+            _data.Where(value => string.Equals(GetName(value), name, StringComparison.OrdinalIgnoreCase)),
+            _nameGetter);
     }
 
     public T Any()
     {
-        var result = _data.FirstOrDefault();
-        return result != null ? _finalizer(result) : default;
+        return _data.FirstOrDefault();
     }
 
     public string AnyName()
     {
-        return _nameGetter(Any());
+        return GetName(Any());
     }
 
     public string[] Names()
     {
-        return [.. _data.Select(x => _nameGetter(x))];
+        return [.. _data.Select(GetName)];
     }
 
     public string Join(string delimiter = "\n- ")
     {
         return string.Join(delimiter, Names());
-    }
-
-    public List<T> ToList()
-    {
-        return [.. _data];
     }
 
     public IEnumerable<T> Data()

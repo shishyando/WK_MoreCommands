@@ -9,14 +9,13 @@ public interface ICommand {
     CommandTag Tag { get; }
     string Description { get; }
     bool EnablesCheatsOnUse { get; }
-    Action<string[]> GetCallback(bool withSuffix = true);
-    Action<string[]> GetLogicCallback();
+    Action<string[]> GetCallback();
+    void Execute(string[] args);
     void OnExit();
 }
 
 public interface ITogglableCommand : ICommand {
     bool Enabled { get; set; }
-    void UpdateEnabled(string[] args);
 }
 
 public abstract class CommandBase : ICommand {
@@ -25,19 +24,25 @@ public abstract class CommandBase : ICommand {
     public abstract string Description { get; }
 
     public abstract bool EnablesCheatsOnUse { get; }
-    public abstract Action<string[]> GetLogicCallback();
+    public abstract void Execute(string[] args);
     public virtual void OnExit() {}
 
-    public virtual void ConfigureBuilder(CommandConsole.CommandBuilder builder) {}
-
-    public void EnableCheatsIfNeeded(string[] args)
+    public virtual void ConfigureBuilder(CommandConsole.CommandBuilder builder)
     {
-        if (EnablesCheatsOnUse) Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabled();
+        builder
+            .AutocompleteCustom(AutocompleteHelpers.NoArguments)
+            .AutocompleteValidator(AutocompleteHelpers.ValidateNoArguments);
     }
 
-    public void PrintSuffix(string[] args)
+    protected virtual bool TryValidateArguments(string[] args, out string error)
     {
-        Accessors.CommandConsoleAccessor.EchoToConsole(Colors.COMMAND_SEP);
+        error = args.Length == 0 ? null : $"Usage: {Aliases.First()} takes no arguments";
+        return args.Length == 0;
+    }
+
+    private void EnableCheatsIfNeeded()
+    {
+        if (EnablesCheatsOnUse) Accessors.CommandConsoleAccessor.EnsureCheatsAreEnabled();
     }
 
     protected bool HasRequiredContext()
@@ -65,22 +70,32 @@ public abstract class CommandBase : ICommand {
         return null;
     }
 
-    public virtual Action<string[]> GetCallback(bool withSuffix = true)
+    protected virtual void BeforeExecute(string[] args) {}
+    protected virtual void AfterExecute() {}
+
+    public virtual Action<string[]> GetCallback()
     {
         return args =>
         {
             if (!HasRequiredContext()) return;
+            if (!TryValidateArguments(args, out string error))
+            {
+                Accessors.CommandConsoleAccessor.EchoToConsole(error);
+                return;
+            }
 
-            EnableCheatsIfNeeded(args);
-            GetLogicCallback()(args);
-            if (withSuffix) PrintSuffix(args);
+            BeforeExecute(args);
+            EnableCheatsIfNeeded();
+            Execute(args);
+            AfterExecute();
+            Accessors.CommandConsoleAccessor.EchoToConsole(Colors.COMMAND_SEP);
         };
     }
 }
 
 public abstract class TogglableCommandBase : CommandBase, ITogglableCommand {
     public bool Enabled { get; set; }
-    public string EnabledStr => Enabled ? "enabled" : "disabled";
+    private string EnabledStr => Enabled ? "enabled" : "disabled";
 
     public override void ConfigureBuilder(CommandConsole.CommandBuilder builder)
     {
@@ -90,47 +105,36 @@ public abstract class TogglableCommandBase : CommandBase, ITogglableCommand {
             .OverValue(() => Enabled);
     }
 
-    public void UpdateEnabled(string[] args)
+    protected override bool TryValidateArguments(string[] args, out string error)
+    {
+        bool valid = args.Length <= 1 && (args.Length == 0 || bool.TryParse(args[0], out _));
+        error = valid ? null : $"Usage: {Aliases.First()} [true|false]";
+        return valid;
+    }
+
+    protected override void BeforeExecute(string[] args)
     {
         Enabled = ParseEnabled(Enabled, args);
     }
 
-    public void PrintEnabled(string[] args)
+    protected override void AfterExecute()
     {
         Accessors.CommandConsoleAccessor.EchoToConsole($"{Colors.Highlighted(Aliases.First())} {EnabledStr}");
     }
 
-    public sealed override Action<string[]> GetCallback(bool withSuffix = true)
+    protected static string[] WhenEnabled(bool enabled)
     {
-        return args =>
-        {
-            if (!HasRequiredContext()) return;
-
-            UpdateEnabled(args);
-            EnableCheatsIfNeeded(args);
-            GetLogicCallback()(args);
-            PrintEnabled(args);
-            if (withSuffix) PrintSuffix(args);
-        };
+        return [enabled ? "true" : "false"];
     }
 
-    public static string[] WhenEnabled(bool enabled)
+    protected static string[] WhenDisabled(bool enabled)
     {
-        return [enabled.ToString().ToLower()];
+        return [enabled ? "false" : "true"];
     }
 
-    public static string[] WhenDisabled(bool enabled)
+    private static bool ParseEnabled(bool enabled, string[] args)
     {
-        return [(!enabled).ToString().ToLower()];
-    }
-
-    public static bool ParseEnabled(bool enabled, string[] args)
-    {
-        if (args.Length == 0 || !bool.TryParse(args[0], out bool result))
-        {
-            return !enabled;
-        }
-        return result;
+        return args.Length == 0 ? !enabled : bool.Parse(args[0]);
     }
 
     public override void OnExit()
@@ -138,6 +142,6 @@ public abstract class TogglableCommandBase : CommandBase, ITogglableCommand {
         if (!Enabled) return;
 
         Enabled = false;
-        GetLogicCallback()(["false"]);
+        Execute(["false"]);
     }
 }

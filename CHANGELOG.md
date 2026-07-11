@@ -1,8 +1,44 @@
+# Version 0.14.0 Lean and Alive (11 july 2026)
+
+### Added:
+
+* Added autocomplete and runtime argument validation throughout MoreCommands; invalid arguments no longer execute commands or enable cheats.
+* `buffs` now shows each active container in a readable block, colors individual effects, and shows a possible source when exactly one item has the same buff definition.
+
+### Fixed:
+
+* Numeric commands now reject `NaN` and infinity before they can corrupt health, movement, gravity, FOV, or timer settings.
+* `freezeai` now pauses AI update loops, including barnacle tongues and strider movement, while preventing new targeting without per-entity state tracking. Physics, animations, and already-running coroutines intentionally continue.
+* `alwaysspawn` now invokes the same success or failure events as the vanilla spawn check.
+* Consumable buff sources are inferred from complete buff definitions instead of guessing by buff ID; ambiguous matches are omitted.
+* `loadrandomlevels` always chooses at least one level and reports an empty level database safely.
+* `left` and `right` now preserve each item's normal inventory rotation.
+* `explore` and `flash` no longer disable their shared `freerun` dependency while the other preset is still enabled.
+* `nextlevel` no longer overflows for very large counts, and level teleporting now reports missing spawn points or unloaded shortcut targets instead of claiming success.
+* Random, region, and subregion level loading now passes canonical level IDs to the vanilla loader and requires explicit region/subregion selections.
+* Fixed timer outlines not reserving mesh padding and made `timerstyle outline <color>` choose a visible width when the current style has none.
+* `timerstyle default` now captures the current base-game timer style for every new timer UI instance.
+
+### Changed:
+
+* Reworked the `timerstyle` presets with stronger contrast and coordinated face/outline color combinations.
+* Item, entity, teleport, region, subregion, and buff-removal commands now use exact autocomplete values instead of choosing the first substring match. Read-only list filters still support substrings and cleanly report no results.
+* Simplified AI freezing, prefab lookup, command execution, timer parsing, and console output paths; removed unused providers, caches, and retired command source files.
+* Rewrote command descriptions to document defaults, ranges, exact IDs, filters, and argument behavior.
+
+### Removed:
+
+* Removed `hudstats`, which duplicated the base game's F5 debug display.
+* Removed the broken `restore` command without a replacement.
+* Removed `spiderman`, `justcause`, and `loadrandomlevels_spiderman`. These were showcases of funny command combinations; use the in-game `alias` command to recreate combinations you want without bloating MoreCommands.
+
 # Version 0.13.0 Resurrect MoreCommands (29 june 2026)
 
 ### Added:
 
 * Added `spiderman`, `justcause`, `loadrandomlevels_nodeathgoo`, and `loadrandomlevels_spiderman` shortcut commands.
+* Added `Input.ToggleConsoleShortcut` config for opening the command console with an additional shortcut.
+* Added position marks, level navigation, player recovery, buff inspection/cleanup, AI freeze, HUD stats, persistent FOV, and persistent timer style commands.
 
 ### Fixed:
 

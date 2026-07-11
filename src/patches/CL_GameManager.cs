@@ -25,7 +25,7 @@ public static class CL_GameManager_Awake_Patcher
             GameEntity gameEntity = obj.GetComponentInChildren<GameEntity>(true);
             if (gameEntity == null || string.IsNullOrWhiteSpace(gameEntity.entityPrefabID)) continue;
 
-            entities.TryAdd(gameEntity.entityPrefabID.ToLower(), gameEntity);
+            entities.TryAdd(gameEntity.entityPrefabID.ToLowerInvariant(), gameEntity);
         }
         __instance.gameEntityPrefabs = [.. entities.Values];
     }

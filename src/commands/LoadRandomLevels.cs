@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using MoreCommands.Common;
 
@@ -10,23 +8,27 @@ public sealed class LoadRandomLevelsCommand : CommandBase
 {
     public override string[] Aliases => ["loadrandomlevels"];
     public override CommandTag Tag => CommandTag.World;
-    public override string Description => "Load completely random levels\nRecommended commands: `godmode`, `deathgoo-goaway`\nHave fun";
+    public override string Description => "Start the level tester with a random non-empty set of levels";
     public override bool EnablesCheatsOnUse => false;
 
-    public override Action<string[]> GetLogicCallback()
+    public override void Execute(string[] args)
     {
-        return args =>
+        M_Level.LevelAssetHolder[] levels = [.. CL_AssetManager.GetFullCombinedAssetDatabase().levelAssets
+            .Where(level => !string.IsNullOrWhiteSpace(level?.id))];
+        if (levels.Length == 0)
         {
-            IEnumerable<M_Level> levels = Prefabs.Levels().Data();
-            int count = levels.Count();
-            string[] levelNames = levels
-                .OrderBy(x => UnityEngine.Random.value)
-                .Take(UnityEngine.Random.RandomRangeInt(0, count))
-                .Select(x => x.name.ToLower())
-                .ToArray();
+            Accessors.CommandConsoleAccessor.EchoToConsole("No levels are available");
+            return;
+        }
 
-            Accessors.CommandConsoleAccessor.EchoToConsole($"Loading random levels:\n- {string.Join("\n- ", levelNames)}");
-            CL_GameManager.gMan.LoadLevels(levelNames);
-        };
+        int count = UnityEngine.Random.Range(1, levels.Length + 1);
+        string[] levelNames = levels
+            .OrderBy(x => UnityEngine.Random.value)
+            .Take(count)
+            .Select(level => level.id.ToLowerInvariant())
+            .ToArray();
+
+        Accessors.CommandConsoleAccessor.EchoToConsole($"Loading random levels:\n- {string.Join("\n- ", levelNames)}");
+        CL_GameManager.gMan.LoadLevels(levelNames);
     }
 }

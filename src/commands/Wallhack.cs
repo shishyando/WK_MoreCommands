@@ -1,4 +1,3 @@
-using System;
 using MoreCommands.Common;
 using MoreCommands.Outlines;
 using UnityEngine;
@@ -10,8 +9,17 @@ public sealed class WallhackCommand : CommandBase
 {
     public override string[] Aliases => ["wallhack", "wh"];
     public override CommandTag Tag => CommandTag.World;
-    public override string Description => "Add outlines to any game entity\n wh [entity] (optional color like 'red', 'green' or '#RRGGBB')\nentity is searched by substring\nwithout params will toggle default behaviour";
+    public override string Description => "Toggle default outlines, or toggle an entity outline by exact ID and optional color";
     public override bool EnablesCheatsOnUse => true;
+
+    protected override bool TryValidateArguments(string[] args, out string error)
+    {
+        bool valid = args.Length <= 2
+            && (args.Length == 0 || AutocompleteHelpers.HasExactMatch(Prefabs.Entities, args[0]))
+            && (args.Length < 2 || ColorUtility.TryParseHtmlString(args[1], out _));
+        error = valid ? null : "Usage: wallhack [exact entity ID] [color|#RRGGBB]";
+        return valid;
+    }
 
     public override void ConfigureBuilder(CommandConsole.CommandBuilder builder)
     {
@@ -28,7 +36,10 @@ public sealed class WallhackCommand : CommandBase
                 autocomplete.FromArray(AutocompleteHelpers.Names(Prefabs.Entities));
                 return;
             case 1:
-                autocomplete.FromArray(AutocompleteHelpers.ColorValues);
+                autocomplete.FromArray(AutocompleteHelpers.WithAcceptedCurrentValue(
+                    AutocompleteHelpers.ColorValues,
+                    autocomplete.ArgumentAt(1),
+                    value => ColorUtility.TryParseHtmlString(value, out _)));
                 return;
             default:
                 autocomplete.Reject();
@@ -42,7 +53,7 @@ public sealed class WallhackCommand : CommandBase
         switch (validator.activeArg)
         {
             case 0:
-                if (AutocompleteHelpers.HasMatch(Prefabs.Entities, value)) return;
+                if (AutocompleteHelpers.HasExactMatch(Prefabs.Entities, value)) return;
                 break;
             case 1:
                 if (ColorUtility.TryParseHtmlString(value, out Color _)) return;
@@ -52,49 +63,46 @@ public sealed class WallhackCommand : CommandBase
         validator.Reject();
     }
 
-    public override Action<string[]> GetLogicCallback()
+    public override void Execute(string[] args)
     {
-        return args =>
+        if (args.Length == 0)
         {
-            if (args.Length == 0)
-            {
-                bool enabled = OutlinesController.ToggleDefault();
-                if (enabled) Accessors.CommandConsoleAccessor.EchoToConsole($"Switching wallhacks to default mode");
-                else Accessors.CommandConsoleAccessor.EchoToConsole($"Switching wallhacks off");
-                return;
-            }
-            string entityIdLower = Prefabs.Entities().Filter(args[0]).AnyName();
-            if (entityIdLower == null)
-            {
-                Accessors.CommandConsoleAccessor.EchoToConsole($"No such entity found: {args[0]}");
-                return;
-            }
+            bool enabled = OutlinesController.ToggleDefault();
+            if (enabled) Accessors.CommandConsoleAccessor.EchoToConsole($"Switching wallhacks to default mode");
+            else Accessors.CommandConsoleAccessor.EchoToConsole($"Switching wallhacks off");
+            return;
+        }
+        string entityIdLower = Prefabs.Entities().FilterExact(args[0]).AnyName();
+        if (entityIdLower == null)
+        {
+            Accessors.CommandConsoleAccessor.EchoToConsole($"No such entity found: {args[0]}");
+            return;
+        }
 
-            bool hasColorArg = args.Length == 2;
-            Color c = UnityEngine.Random.ColorHSV();
-            if (hasColorArg && !ColorUtility.TryParseHtmlString(args[1], out c))
-            {
-                Accessors.CommandConsoleAccessor.EchoToConsole($"Failed to parse color {args[1]}");
-                return;
-            }
+        bool hasColorArg = args.Length == 2;
+        Color c = UnityEngine.Random.ColorHSV();
+        if (hasColorArg && !ColorUtility.TryParseHtmlString(args[1], out c))
+        {
+            Accessors.CommandConsoleAccessor.EchoToConsole($"Failed to parse color {args[1]}");
+            return;
+        }
 
-            if (OutlinesController.IsEnabled(entityIdLower))
+        if (OutlinesController.IsEnabled(entityIdLower))
+        {
+            if (hasColorArg)
             {
-                if (hasColorArg)
-                {
-                    c = OutlinesController.SetColor(entityIdLower, c);
-                    Accessors.CommandConsoleAccessor.EchoToConsole($"Changed outlines for {Colors.Tagged(entityIdLower, c)}, color: {Colors.Tagged(Colors.Str(c), c)}");
-                    return;
-                }
-
-                OutlinesController.DisableOutlines(entityIdLower);
-                Accessors.CommandConsoleAccessor.EchoToConsole($"Disabled outlines for: {entityIdLower}");
+                c = OutlinesController.SetColor(entityIdLower, c);
+                Accessors.CommandConsoleAccessor.EchoToConsole($"Changed outlines for {Colors.Tagged(entityIdLower, c)}, color: {Colors.Tagged(Colors.Str(c), c)}");
                 return;
             }
 
-            c = OutlinesController.EnableOutlines(entityIdLower, c, useDefaultColor: !hasColorArg);
-            Accessors.CommandConsoleAccessor.EchoToConsole($"Enabled outlines for {Colors.Tagged(entityIdLower, c)}, color: {Colors.Tagged(Colors.Str(c), c)}");
-        };
+            OutlinesController.DisableOutlines(entityIdLower);
+            Accessors.CommandConsoleAccessor.EchoToConsole($"Disabled outlines for: {entityIdLower}");
+            return;
+        }
+
+        c = OutlinesController.EnableOutlines(entityIdLower, c, useDefaultColor: !hasColorArg);
+        Accessors.CommandConsoleAccessor.EchoToConsole($"Enabled outlines for {Colors.Tagged(entityIdLower, c)}, color: {Colors.Tagged(Colors.Str(c), c)}");
     }
 
     public override void OnExit()

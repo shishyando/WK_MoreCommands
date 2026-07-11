@@ -18,9 +18,7 @@ public static class PerkChanger
         Perk template = CL_AssetManager.GetPerkAsset(perkId, "");
         if (template != null)
         {
-            Perk perk = UnityEngine.Object.Instantiate(template);
-            int toAdd = perk.stackMax;
-            if (toAdd > 0) player.AddPerk(perk, toAdd);
+            if (template.stackMax > 0) player.AddPerk(template, template.stackMax);
             return;
         }
 

@@ -1,4 +1,3 @@
-using System;
 using HarmonyLib;
 using MoreCommands.Common;
 
@@ -11,8 +10,17 @@ public sealed class GravityCommand : CommandBase
 
     public override string[] Aliases => ["sv_gravity", "grav"];
     public override CommandTag Tag => CommandTag.Player;
-    public override string Description => "set player gravity multiplier (1 is default)";
+    public override string Description => "Set the player gravity multiplier; no argument resets it to 1";
     public override bool EnablesCheatsOnUse => true;
+
+    protected override bool TryValidateArguments(string[] args, out string error)
+    {
+        bool valid = args.Length <= 1
+            && (args.Length == 0
+                || (float.TryParse(args[0], out float value) && AutocompleteHelpers.IsFinite(value)));
+        error = valid ? null : "Usage: grav [finite multiplier]";
+        return valid;
+    }
 
     public override void ConfigureBuilder(CommandConsole.CommandBuilder builder)
     {
@@ -28,31 +36,25 @@ public sealed class GravityCommand : CommandBase
         return player == null ? null : GravityMultRef(player);
     }
 
-    public override Action<string[]> GetLogicCallback()
+    public override void Execute(string[] args)
     {
-        return args =>
+        ENT_Player player = ENT_Player.playerObject;
+        if (player == null)
         {
-            ENT_Player player = ENT_Player.playerObject;
-            if (player == null)
-            {
-                Accessors.CommandConsoleAccessor.EchoToConsole("No player found");
-                return;
-            }
+            Accessors.CommandConsoleAccessor.EchoToConsole("No player found");
+            return;
+        }
 
-            if (args.Length == 0) {
-                player.SetGravityMult(1f);
-                Accessors.CommandConsoleAccessor.EchoToConsole($"Player gravity set to 1.0");
-            }
-            else if (float.TryParse(args[0], out float g))
-            {
-                player.SetGravityMult(g);
-                Accessors.CommandConsoleAccessor.EchoToConsole($"Player gravity set to {g:F1}");
-            }
-            else
-            {
-                Accessors.CommandConsoleAccessor.EchoToConsole($"Invalid arguments for gravity command: {args.Join(delimiter: " ")}");
-            }
-        };
+        if (args.Length == 0) {
+            player.SetGravityMult(1f);
+            Accessors.CommandConsoleAccessor.EchoToConsole("Player gravity set to 1");
+        }
+        else
+        {
+            float.TryParse(args[0], out float g);
+            player.SetGravityMult(g);
+            Accessors.CommandConsoleAccessor.EchoToConsole($"Player gravity set to {g:0.###}");
+        }
     }
 
     public override void OnExit()

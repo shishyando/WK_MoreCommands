@@ -1,35 +1,23 @@
 using System;
-using System.Collections.Generic;
+using System.Linq;
 
 namespace MoreCommands.HandleProviders;
 
 public class Items : HandleProvider<Item>
 {
-    public override Func<Item, string> Name {get;} = x => x?.prefabName?.ToLower() ?? null;
-    public override Func<Item, Item> Finalizer {get;} = obj => obj.GetClone();
-    private List<Item> _items = [];
-    
-    public void Initialize(List<Item> items)
-    {
-        _items = items;
-    }
+    public override Func<Item, string> Name { get; } = item => item?.prefabName;
 
-    public void InitializeFromAssetDatabase()
+    public override Item FromCommand(string[] args)
     {
-        var itemPrefabs = CL_AssetManager.GetFullCombinedAssetDatabase().itemPrefabs;
-        foreach (UnityEngine.GameObject prefab in itemPrefabs)
-        {
-            Item_Object component = prefab.GetComponent<Item_Object>();
-            if (component != null)
-            {
-                _items.Add(component.itemData);
-            }
-        }
+        return base.FromCommand(args)?.GetClone();
     }
 
     public override Handle<Item> Handle()
     {
-        if (_items.Count == 0) InitializeFromAssetDatabase();
-        return new(_items, Name, Finalizer);
+        return new(
+            CL_AssetManager.GetFullCombinedAssetDatabase().itemPrefabs
+                .Select(prefab => prefab?.GetComponent<Item_Object>()?.itemData)
+                .Where(item => item != null),
+            Name);
     }
 }

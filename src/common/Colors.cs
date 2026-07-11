@@ -11,7 +11,6 @@ public static class Colors
     public static Color C_CONSOLE = new(0.898f,0.796f,0.949f); // Light grayish violet
     public static Color C_DESCRIPTION = new(0.792f,0.792f,0.792f); // light grey
 
-    public static Color WHITE = Color.white;
     public static Color MAGENTA = Color.magenta;
     public static Color CYAN = Color.cyan;
     public static Color LIGHT_GREEN =  new(0.3f, 0.9f, 0.3f);
@@ -44,12 +43,11 @@ public static class Colors
             CommandTag.Player => C_PLAYER,
             CommandTag.World => C_WORLD,
             CommandTag.Console => C_CONSOLE,
-            _ => WHITE,
+            _ => Color.white,
         };
         string prefix = c.EnablesCheatsOnUse ? CHEAT_SIGN : "-";
 
         return $"{prefix} {Tagged(c.Aliases.Join(), color)}:\n{Tagged(c.Description, C_DESCRIPTION)}";
-        // return Tagged($"{prefix} {c.Aliases.Join()}:\n{c.Description}", color);
     }
 
 }

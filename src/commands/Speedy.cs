@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using MoreCommands.Common;
 
 namespace MoreCommands.Commands;
@@ -9,10 +7,10 @@ public sealed class SpeedyPerksCommand : CommandBase
 {
     public override string[] Aliases => ["speedyperks"];
     public override CommandTag Tag => CommandTag.Player;
-    public override string Description => "get some movement perks";
+    public override string Description => "Max out the curated MoreCommands perk set";
     public override bool EnablesCheatsOnUse => true;
 
-    private static List<string> MovementPerks = [
+    private static readonly string[] PerkIds = [
         "Perk_ArmoredPlating",
         "Perk_ElasticLimbs",
         "Perk_MetabolicStasis",
@@ -32,16 +30,13 @@ public sealed class SpeedyPerksCommand : CommandBase
         "Perk_Rho_Blessing_Overwhelm",
     ];
 
-    public override Action<string[]> GetLogicCallback()
+    public override void Execute(string[] args)
     {
-        return args =>
+        foreach (string perkId in PerkIds)
         {
-            foreach (var perkId in MovementPerks)
-            {
-                PerkChanger.MaxOutPerk(perkId);
-            }
-            Accessors.CommandConsoleAccessor.EchoToConsole($"Movement perks given");
-        };
+            PerkChanger.MaxOutPerk(perkId);
+        }
+        Accessors.CommandConsoleAccessor.EchoToConsole("MoreCommands perk set maxed out");
     }
 
 }

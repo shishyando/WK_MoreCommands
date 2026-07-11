@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HarmonyLib;
 using MoreCommands.Common;
 
 namespace MoreCommands.Commands;
@@ -11,20 +10,25 @@ public sealed class TeleportCommand : CommandBase
 {
     public override string[] Aliases => ["tp"];
     public override CommandTag Tag => CommandTag.Player;
-    public override string Description => "teleport to `arg`, no `arg` = list locations";
+    public override string Description => "Teleport to an exact named shortcut; no argument lists shortcuts";
     public override bool EnablesCheatsOnUse => true;
 
-    private static readonly Dictionary<string, string> Locations = new() {
+    private static readonly Dictionary<string, string> Locations = new(StringComparer.OrdinalIgnoreCase) {
         { "intro", "m1_intro_01"},
         { "exp", "m1_silos_safearea_01" },
         { "prepipes", "campaign_interlude_silo_to_pipeworks" },
-        // { "elevator", "campaign_interlude_pipeworks_to_habitation_01" }, // not working after the update
         { "teeth", "m3_habitation_shaft_intro" },
         { "pier", "m3_habitation_pier_entrance_01" },
         { "abyss", "m3_habitation_lab_ending" },
-        // shortcuts? pier otherside? obelisk?
-        // need to preload levels?
     };
+
+    protected override bool TryValidateArguments(string[] args, out string error)
+    {
+        bool valid = args.Length <= 1
+            && (args.Length == 0 || Locations.ContainsKey(args[0]));
+        error = valid ? null : "Usage: tp [location]";
+        return valid;
+    }
 
     public override void ConfigureBuilder(CommandConsole.CommandBuilder builder)
     {
@@ -46,48 +50,39 @@ public sealed class TeleportCommand : CommandBase
 
     private static void ValidateLocation(CommandConsole.CommandValidator validator)
     {
-        string value = validator.ArgumentAt(validator.activeArg);
-        if (validator.activeArg != 0 || !Locations.Keys.Any(x => x.Contains(value.ToLower())))
+        if (validator.activeArg != 0 || !Locations.ContainsKey(validator.ArgumentAt(validator.activeArg)))
         {
             validator.Reject();
         }
     }
 
 
-    public override Action<string[]> GetLogicCallback()
+    public override void Execute(string[] args)
     {
-        return args =>
+        if (args.Length == 0)
         {
-            if (args.Length == 0)
-            {
-                Accessors.CommandConsoleAccessor.EchoToConsole($"Available locations:\n- {Locations.Keys.Join(delimiter: "\n- ")}");
-                return;
-            }
-            List<string> destinations = [];
-            foreach (var tp in Locations)
-            {
-                if (tp.Key.Contains(args[0].ToLower()))
-                {
-                    destinations.Add(tp.Value);
-                }
-            }
-            if (destinations.Count == 0)
-            {
-                Accessors.CommandConsoleAccessor.EchoToConsole($"No such tp option, available options:\n- {string.Join("\n- ", Locations.Keys)}");
-                return;
-            }
-            if (destinations.Count > 1)
-            {
-                Accessors.CommandConsoleAccessor.EchoToConsole($"Ambiguous place to tp: {args[0]} maps to {string.Join(", ", destinations)}\n teleporting to first");
-            }
-            if (WorldLoader.instance == null)
-            {
-                Accessors.CommandConsoleAccessor.EchoToConsole("No world loader found");
-                return;
-            }
+            Accessors.CommandConsoleAccessor.EchoToConsole($"Available locations:\n- {string.Join("\n- ", Locations.Keys)}");
+            return;
+        }
 
-            WorldLoader.instance.TeleportPlayerToTargetLevel([destinations[0]]);
-            Accessors.CommandConsoleAccessor.EchoToConsole($"Teleported to {Colors.Highlighted(destinations[0])}");
-        };
+        WorldLoader.BranchInfo branch = WorldLoader.instance?.GetCurrentBranch();
+        if (branch?.levelTracker == null)
+        {
+            Accessors.CommandConsoleAccessor.EchoToConsole("No loaded levels found");
+            return;
+        }
+
+        string levelId = Locations[args[0]];
+        WorldLoader.LevelInfo destination = branch.levelTracker.FirstOrDefault(level =>
+            string.Equals(level?.GetLevelAssetReference()?.id, levelId, StringComparison.OrdinalIgnoreCase));
+        if (destination == null)
+        {
+            Accessors.CommandConsoleAccessor.EchoToConsole(
+                $"Shortcut {Colors.Highlighted(args[0])} targets {Colors.Highlighted(levelId)}, which is not loaded");
+            return;
+        }
+
+        WorldCommandHelpers.TeleportToLevel(destination, out string message);
+        Accessors.CommandConsoleAccessor.EchoToConsole(message);
     }
 }

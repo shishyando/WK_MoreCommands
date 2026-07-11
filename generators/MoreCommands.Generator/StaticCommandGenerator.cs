@@ -28,8 +28,6 @@ public sealed class StaticCommandGenerator : ISourceGenerator
 
         var compilation = context.Compilation;
         var iCommandType = compilation.GetTypeByMetadataName("MoreCommands.Common.ICommand");
-        var stringType = compilation.GetSpecialType(SpecialType.System_String);
-        var stringArrayType = stringType is null ? null : compilation.CreateArrayTypeSymbol(stringType);
 
         var validCommandClasses = new List<INamedTypeSymbol>();
         var perClassAliases = new Dictionary<INamedTypeSymbol, List<string>>(SymbolEqualityComparer.Default);
@@ -296,5 +294,4 @@ file sealed class Receiver : ISyntaxReceiver
         }
     }
 }
-
 

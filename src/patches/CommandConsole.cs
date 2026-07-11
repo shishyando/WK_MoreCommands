@@ -1,7 +1,6 @@
 using System;
 using HarmonyLib;
 using MoreCommands.Common;
-using UnityEngine;
 
 namespace MoreCommands.Patches;
 
@@ -9,7 +8,7 @@ namespace MoreCommands.Patches;
 public static class CommandConsole_Awake_Patcher
 {
     [HarmonyPostfix]
-    public static void RegisterMoreCommands(CommandConsole __instance)
+    public static void RegisterMoreCommands()
     {
         CommandRegistration.AddCommandsByTag(CommandTag.Console);
     }
@@ -35,6 +34,27 @@ public static class CommandConsole_Awake_Patcher
     }
 }
 
+[HarmonyPatch(typeof(CommandConsole), "LateUpdate")]
+public static class CommandConsole_LateUpdate_Patcher
+{
+    private static readonly Action<CommandConsole> ToggleConsole =
+        AccessTools.MethodDelegate<Action<CommandConsole>>(
+            AccessTools.Method(typeof(CommandConsole), "ToggleConsole")
+        );
+
+    [HarmonyPrefix]
+    public static void ToggleWithConfiguredShortcut(CommandConsole __instance)
+    {
+        if (!Plugin.ActiveToggleConsoleShortcut.IsDown())
+        {
+            return;
+        }
+
+        __instance.inputField.text = string.Empty;
+        ToggleConsole(__instance);
+    }
+}
+
 public static class CommandRegistration
 {
     public static void AddCommandsByTag(CommandTag tag)
@@ -48,9 +68,9 @@ public static class CommandRegistration
         }
     }
 
-    public static void AddCommandIfFree(string alias, ICommand source)
+    private static void AddCommandIfFree(string alias, ICommand source)
     {
-        string command = alias.ToLower();
+        string command = alias.ToLowerInvariant();
 
         if (CommandConsole.instance != null)
         {
@@ -85,7 +105,7 @@ public static class CommandConsole_RegisterCommand_Patcher
         // base game registers chains commands and I don't want that behavior
         if (command == null || __instance == null) return true;
 
-        string commandKey = command.ToLower();
+        string commandKey = command.ToLowerInvariant();
         var commandsDict = Accessors.CommandConsoleAccessor.GetCommands(__instance);
         if (!commandsDict.Contains(commandKey)) return true;
 
